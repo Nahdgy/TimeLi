@@ -7,9 +7,6 @@ function loadController( string $controller)
   }
 }
 
-spl_autoload_register('loadController');
-
-
 function loadModel(string $model)
 {
   if(file_exists('Model/'.$model.'.php'))
@@ -18,15 +15,17 @@ function loadModel(string $model)
   }
 }
 
-spl_autoload_register('loadModel');
-
-
 function loadClass(string $class)
 {
-  if(file_exists('Class/'.$class.'.php'))
-  {
+  if (!class_exists($class) && file_exists('Class/'.$class.'.php')) {
     require_once 'Class/'.$class.'.php';
   }
 }
 
+spl_autoload_unregister('loadController');
+spl_autoload_unregister('loadModel');
+spl_autoload_unregister('loadClass');
+
 spl_autoload_register('loadClass');
+spl_autoload_register('loadModel');
+spl_autoload_register('loadController');

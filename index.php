@@ -1,14 +1,15 @@
 <?php
+session_unset();
 $page = '';
  require_once 'Config/config.php';
  require_once 'Functions/autoloader.php';
  session_start();
  require_once 'Functions/tools.php';
-
+ 
+ $title = 'TimeLi';
  include 'Inc/head.php';
  include 'Inc/navbar.php';
-
-$ctrl = '';
+$ctrl = 'UsersController';
 if(isset($_GET['ctrl']))
 {
     $ctrl = ucfirst(strtolower($_GET['ctrl'])).'Controller';
@@ -47,3 +48,4 @@ catch(Exception $e)
 }
 
 require_once 'Inc/foot.php';
+?>
