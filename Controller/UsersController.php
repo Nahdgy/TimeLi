@@ -20,7 +20,7 @@ class UsersController
             
            return $users;
         } 
-        if(!isset($_GET['action']))
+        if(empty($_GET['action']))
         {
             include './View/users/index.php';
         }
@@ -40,6 +40,7 @@ class UsersController
             {
                 if($login === $user->getLogin() && password_verify($pwd, $user->getPwd()))
                 {
+                    
                     header('Location: index.php?ctrl=home&action=index&id='.$user->getId());
                     return $_SESSION['timeLi']['user'] = $user;
                 }

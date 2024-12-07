@@ -7,7 +7,7 @@
         </div>
         <div>
             <label for="login">Login :</label>
-            <input type="text" id="login" name="login" required>
+            <input type="email" id="login" name="login" required>
         </div>
         <div>
             <label for="pwd">Mot de passe :</label>

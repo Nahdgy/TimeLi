@@ -3,6 +3,14 @@
 class MusicModel extends CoreModel
 {
     private $_req;
+
+    public function __destruct()
+    {
+        if(!empty($this->_req))
+        {
+            $this->_req->closeCursor();
+        }
+    }
  
     public function index()
     {
@@ -16,6 +24,22 @@ class MusicModel extends CoreModel
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute(['query' => "%$query%"]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //Filtres
+    public function musicByMood($mood_id)
+    {
+        $sql = "SELECT * FROM music JOIN mood USING (mood_id) WHERE mood_id = :mood_id";
+    }
+
+    public function musicByType($type_id)
+    {
+        $sql = "SELECT * FROM music JOIN type USING (typ_id) WHERE typ_id = :type_id";
+    }
+
+    public function musicByCountry($country_id)
+    {
+        $sql = "SELECT * FROM music JOIN country USING (cou_id) WHERE cou_id = :country_id";
     }
     public function create($data)
     {

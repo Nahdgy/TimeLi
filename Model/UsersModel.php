@@ -60,7 +60,7 @@ class UsersModel extends CoreModel
 #Méthodes de création d'un utilisateur dans la base de données
     public function create($pwd)
     {
-        $sql = "INSERT INTO users (use_name, use_login, use_pwd, use_statue) VALUES (:name, :login, :pwd, :statue)";
+        $sql = "INSERT INTO users (use_name, use_login, use_pwd, use_statue, moo_id) VALUES (:name, :login, :pwd, :statue, 7)";
         try
         {
             if(($this->_req = $this->getDb()->prepare($sql)) !== false)

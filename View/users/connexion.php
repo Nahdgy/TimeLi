@@ -7,7 +7,7 @@
 <?php endif; ?>
     <form action="" method="post">
         <div>
-            <label for="email">Adresse e-mail :</label>
+            <label for="email">Adresse e-mail (login) :</label>
             <input type="email" id="email" name="email" required>
         </div>
         <div>
@@ -15,10 +15,7 @@
             <input type="password" id="pwd" name="pwd" required>
         </div>
         <input type="hidden" name="submit" value="">
-        <button type="submit">Se connecter</button>
-        <?php debug($users); ?>
-        <input type="hidden" name="id" value="<?= $users->getId(); ?>">
+        <button type="submit">Se connecter</button>  
     </form>
-    <p>Vous n'avez pas de compte ? <a href="index.php?ctrl=Users&action=register">Inscrivez-vous ici</a></p>
-    
+    <p>Vous n'avez pas de compte ? <a href="index.php?ctrl=Users&action=register">Inscrivez-vous ici</a></p> 
 </body>
