@@ -1,3 +1,6 @@
+<?php
+include './Inc/navbar.php';
+?>
 <div class="search-results">
     <?php foreach ($musics as $music): ?>
         <div class="music-card">

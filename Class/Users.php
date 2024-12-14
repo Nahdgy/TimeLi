@@ -3,24 +3,32 @@
 class Users extends CoreClass
 {
     private $use_id;
-    private $use_name;
-    private $use_login;
+    private $use_firstname;
+    private $use_lastname;
+    private $use_email;
     private $use_pwd;
     private $use_statue;
+    private $moo_id;
+    private $rol_id;
     
     public function getId()
     {
         return $this->use_id;
     }
 
-    public function getName()
+    public function getFirstname()
     {
-        return $this->use_name;
+        return $this->use_firstname;
     }
 
-    public function getLogin()
+    public function getLastname()
     {
-        return $this->use_login;
+        return $this->use_lastname;
+    }
+
+    public function getEmail()
+    {
+        return $this->use_email;
     }
 
     public function getPwd()
@@ -33,19 +41,34 @@ class Users extends CoreClass
         return $this->use_statue;
     }
 
+    public function getMooId()
+    {
+        return $this->moo_id;
+    }
+
+    public function getRolId()
+    {
+        return $this->rol_id;
+    }
+
     public function setId($use_id)
     {
         $this->use_id = $use_id;
     }
 
-    public function setName($use_name)
+    public function setFirstname($use_firstname)
     {
-        $this->use_name = $use_name;
+        $this->use_firstname = $use_firstname;
     }
 
-    public function setLogin($use_login)
+    public function setLastname($use_lastname)
     {
-        $this->use_login = $use_login;
+        $this->use_lastname = $use_lastname;
+    }
+
+    public function setEmail($use_email)
+    {
+        $this->use_email = $use_email;
     }   
 
     public function setPwd($use_pwd)
@@ -56,5 +79,15 @@ class Users extends CoreClass
     public function setStatue($use_statue)
     {
         $this->use_statue = $use_statue;
+    }
+
+    public function setMooId($moo_id)
+    {
+        $this->moo_id = $moo_id;
+    }
+
+    public function setRolId($rol_id)
+    {
+        $this->rol_id = $rol_id;
     }
 }

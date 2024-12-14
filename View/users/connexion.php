@@ -17,5 +17,6 @@
         <input type="hidden" name="submit" value="">
         <button type="submit">Se connecter</button>  
     </form>
+    <?php debug($users); ?>
     <p>Vous n'avez pas de compte ? <a href="index.php?ctrl=Users&action=register">Inscrivez-vous ici</a></p> 
 </body>

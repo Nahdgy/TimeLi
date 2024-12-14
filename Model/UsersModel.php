@@ -16,7 +16,7 @@ class UsersModel extends CoreModel
 #Méthodes de récupération de tous les utilisateurs présents dans la base de données
     public function readAll()
     {
-        $sql = "SELECT use_id AS Id, use_name AS Name, use_login AS Login, use_pwd AS Pwd, use_statue AS Statue FROM users";
+        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id AS roleId FROM users";
 
         try
         {
@@ -35,7 +35,7 @@ class UsersModel extends CoreModel
 #Méthodes de récupération d'un utilisateur présent dans la base de données
     public function readOne($id)
     {
-        $sql = "SELECT use_id AS Id, use_name AS Name, use_login AS Login, use_pwd AS Pwd, use_statue AS Statue FROM users WHERE use_id = :id";
+        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id AS roleId FROM users WHERE use_id = :id";
         try
         {
             if(($this->_req = $this->getDb()->prepare($sql)) !== false)
@@ -60,12 +60,12 @@ class UsersModel extends CoreModel
 #Méthodes de création d'un utilisateur dans la base de données
     public function create($pwd)
     {
-        $sql = "INSERT INTO users (use_name, use_login, use_pwd, use_statue, moo_id) VALUES (:name, :login, :pwd, :statue, 7)";
+        $sql = "INSERT INTO users (use_firstname, use_lastname, use_email, use_pwd, use_statue, moo_id, rol_id) VALUES (:firstname, :lastname, :email, :pwd, 1, 7, 2)";
         try
         {
             if(($this->_req = $this->getDb()->prepare($sql)) !== false)
             {
-                if(($this->_req->bindValue(':name',$_POST['name'], PDO::PARAM_STR)) && ($this->_req->bindValue(':login', $_POST['login'], PDO::PARAM_STR)) && ($this->_req->bindValue(':pwd', $pwd, PDO::PARAM_STR)) && ($this->_req->bindValue(':statue', 1, PDO::PARAM_INT)))
+                if(($this->_req->bindValue(':firstname',$_POST['firstname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':lastname', $_POST['lastname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':email', $_POST['email'], PDO::PARAM_STR)) && ($this->_req->bindValue(':pwd', $pwd, PDO::PARAM_STR)) && ($this->_req->bindValue(':statue', 1, PDO::PARAM_INT)) && ($this->_req->bindValue(':mood', 7, PDO::PARAM_INT)) && ($this->_req->bindValue(':role', 2, PDO::PARAM_INT)))
                 {
                     if($this->_req->execute())
                     {
@@ -80,6 +80,30 @@ class UsersModel extends CoreModel
             die($e->getMessage());
         }
 
+    }
+
+#Méthode de création d'admin dans la base de données
+    public function createAdmin($pwd)
+    {
+        $sql = "INSERT INTO users (use_firstname, use_lastname, use_mail,use_pwd,use_statue,moo_id,rol_id) VALUES (:firstname, :lastname, :mail, :pwd, 1, 7, 1)";
+        try
+        {
+          if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+          {
+            if(($this->_req->bindValue(':firstname', $_POST['firstname'])) && ($this->_req->bindValue(':lastname', $_POST['lastname'])) && ($this->_req->bindValue(':mail', $_POST['email'])) && ($this->_req->bindValue(':pwd', $pwd)) && ($this->_req->bindValue(':statue', 1)) && ($this->_req->bindvalue(':mood', 7))&& ($this->_req->bindValue(':role', 1)))
+            {
+              if($this->_req->execute())
+              {
+                $res = $this->getDb()->lastInsertId();
+                return $res;
+              }
+            }
+          }
+        }
+        catch(PDOException $e)
+        {
+          die($e->getMessage());
+        }
     }
 
 #Méthodes de suppression d'un utilisateur dans la base de données
@@ -108,13 +132,13 @@ class UsersModel extends CoreModel
 #Méthodes de mise à jour d'un utilisateur dans la base de données
     public function update($id)
     {
-        $sql = "UPDATE users SET use_name = :name, use_login = :login, use_pwd = :pwd, use_statue = :statue WHERE use_id = :id";
+        $sql = "UPDATE users SET use_firstname = :firstname, use_lastname = :lastname, use_email = :email, use_pwd = :pwd, use_statue = :statue WHERE use_id = :id";
         $password = !empty($_POST['pwd']) ? password_hash($_POST['pwd'], PASSWORD_DEFAULT) : $_POST['pwd'];
         try
         {
             if(($this->_req = $this->getDb()->prepare($sql)) !== false)
             {
-                if(($this->_req->bindValue(':name', $_POST['name'], PDO::PARAM_STR)) && ($this->_req->bindValue(':login', $_POST['login'], PDO::PARAM_STR)) && ($this->_req->bindValue(':pwd', $password, PDO::PARAM_STR)) && ($this->_req->bindValue(':statue', $_POST['statue'], PDO::PARAM_INT)) && ($this->_req->bindValue(':id', $id, PDO::PARAM_INT)))
+                if(($this->_req->bindValue(':firstname', $_POST['firstname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':lastname', $_POST['lastname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':email', $_POST['email'], PDO::PARAM_STR)) && ($this->_req->bindValue(':pwd', $password, PDO::PARAM_STR)) && ($this->_req->bindValue(':statue', $_POST['statue'], PDO::PARAM_INT)) && ($this->_req->bindValue(':id', $id, PDO::PARAM_INT)))
                 {
                     if($this->_req->execute())
                     {

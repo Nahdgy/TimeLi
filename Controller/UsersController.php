@@ -2,6 +2,10 @@
 
 class UsersController 
 {
+    public function landing()
+    {
+        include './View/landing/index.php';
+    }
     public function index()
     {
         $modelUsers = new UsersModel();
@@ -33,22 +37,42 @@ class UsersController
         if(isset($_POST['submit']))
         {
             
-            $login = $_POST['login'];
+            $email = $_POST['email'];
             $pwd = $_POST['pwd'];
             
-            foreach($users as $user)
+            if($_GET['role'] === 'user')
             {
-                if($login === $user->getLogin() && password_verify($pwd, $user->getPwd()))
+                foreach($users as $user)
                 {
-                    
-                    header('Location: index.php?ctrl=home&action=index&id='.$user->getId());
-                    return $_SESSION['timeLi']['user'] = $user;
+                    if($email === $user->getEmail() && password_verify($pwd, $user->getPwd()))
+                    {
+                        
+                        header('Location: index.php?ctrl=home&action=index&id='.$user->getId());
+                        return $_SESSION['timeLi']['user'] = $user;
+                    }
+                    else
+                    {
+                        header('Location: index.php?ctrl=Users&action=login&login=error');
+                    }
                 }
-                else
+                
+            }
+            else if($_GET['role'] === 'admin')
+            {
+                foreach($users as $user)
                 {
-                    header('Location: index.php?ctrl=Users&action=login&login=error');
+                    if($email == $user->getEmail() && password_verify($pwd, $user->getPwd()))
+                    {
+                        header('Location: index.php?ctrl=admin&action=index&role=admin');
+                        return $_SESSION['jobOffer']['admin'] = $user;
+                    }
+                    else
+                    {
+                        header('Location: index.php?ctrl=Users&action=login&role=admin&login=error');
+                    }
                 }
             }
+                
         }
         include './View/users/connexion.php';
         

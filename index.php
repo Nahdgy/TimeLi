@@ -8,14 +8,13 @@ $page = '';
  
  $title = 'TimeLi';
  include 'Inc/head.php';
- include 'Inc/navbar.php';
 $ctrl = 'UsersController';
 if(isset($_GET['ctrl']))
 {
     $ctrl = ucfirst(strtolower($_GET['ctrl'])).'Controller';
 }
 
-$method = 'index';
+$method = 'landing';
 if(isset($_GET['action']))
 {
     $method = $_GET['action'];

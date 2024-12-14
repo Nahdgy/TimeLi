@@ -2,12 +2,16 @@
     <h1>Inscription</h1>
     <form action="index.php?ctrl=Users&action=register" method="post">
         <div>
-            <label for="name">Prénom :</label>
-            <input type="text" id="name" name="name" required>
+            <label for="firstname">Prénom :</label>
+            <input type="text" id="firstname" name="firstname" required>
         </div>
         <div>
-            <label for="login">Login :</label>
-            <input type="email" id="login" name="login" required>
+            <label for="lastname">Nom :</label>
+            <input type="text" id="lastname" name="lastname" required>
+        </div>
+        <div>
+            <label for="email">Adresse e-mail :</label>
+            <input type="email" id="email" name="email" required>
         </div>
         <div>
             <label for="pwd">Mot de passe :</label>
@@ -19,5 +23,5 @@
         </div>
         <button type="submit" name="submit">S'inscrire</button>
     </form>
-    <p>Vous avez déjà un compte ? <a href="index.php?ctrl=Users&action=login&state=student">Connectez-vous ici</a></p>
+    <p>Vous avez déjà un compte ? <a href="index.php?ctrl=Users&action=login&role=user">Connectez-vous ici</a></p>
 </body>
