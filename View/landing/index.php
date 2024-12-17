@@ -1,3 +1,4 @@
+
 <div id="carouselExemple" class="carousel slide" data-bs-ride="carousel">
     <!-- Indicateurs -->
     <div class="carousel-indicators">
@@ -69,25 +70,5 @@
 </div>
 
 <style>
-    .bg-purple {
-        background-color: #6f42c1;
-    }
     
-    .carousel-item {
-        transition: transform .6s ease-in-out;
-    }
-    
-    .carousel-indicators [data-bs-target] {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-    }
-
-    .admin-login-container {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-    }
 </style>

@@ -32,11 +32,13 @@ class PlaylistModel extends CoreModel
                     $datas = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                     return $datas;
                 }
+                return false;
             }
         }
         catch(PDOException $e)
         {
-            return $e->getMessage();
+            error_log($e->getMessage());
+            return [];
         }
 
 

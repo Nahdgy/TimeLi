@@ -26,8 +26,6 @@ try
     {
         $controller = new $ctrl;
 
-        
-
         if(method_exists($ctrl,$method))
         {
             if(!empty($_GET['id']) && ctype_digit($_GET['id']))

@@ -10,7 +10,6 @@ class UsersController
     {
         $modelUsers = new UsersModel();
         $datas = $modelUsers->readAll();
-        
 
         $users = [];
         
@@ -24,6 +23,8 @@ class UsersController
             
            return $users;
         } 
+        
+        
         if(empty($_GET['action']))
         {
             include './View/users/index.php';
@@ -74,7 +75,7 @@ class UsersController
             }
                 
         }
-        include './View/users/connexion.php';
+        include './View/users/connection.php';
         
     }
     public function register()
@@ -97,7 +98,7 @@ class UsersController
 
             if($id)
             {
-                header('Location: index.php?ctrl=Users&action=login');
+                header('Location: index.php?ctrl=Users&action=login&role=user');
             }
             else
             {

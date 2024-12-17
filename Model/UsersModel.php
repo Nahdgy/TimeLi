@@ -16,7 +16,7 @@ class UsersModel extends CoreModel
 #Méthodes de récupération de tous les utilisateurs présents dans la base de données
     public function readAll()
     {
-        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id AS roleId FROM users";
+        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id AS roleId FROM users WHERE roleId = 2";
 
         try
         {
@@ -25,6 +25,7 @@ class UsersModel extends CoreModel
                 $datas = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                 return $datas;
             }
+            return false;
         }
         catch(PDOException $e)
         {
@@ -60,12 +61,12 @@ class UsersModel extends CoreModel
 #Méthodes de création d'un utilisateur dans la base de données
     public function create($pwd)
     {
-        $sql = "INSERT INTO users (use_firstname, use_lastname, use_email, use_pwd, use_statue, moo_id, rol_id) VALUES (:firstname, :lastname, :email, :pwd, 1, 7, 2)";
+        $sql = "INSERT INTO users(use_firstname, use_lastname, use_email, use_pwd, use_statue, moo_id, rol_id) VALUES (:firstname, :lastname, :email, :pwd, 1, 7, 2)";
         try
         {
             if(($this->_req = $this->getDb()->prepare($sql)) !== false)
             {
-                if(($this->_req->bindValue(':firstname',$_POST['firstname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':lastname', $_POST['lastname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':email', $_POST['email'], PDO::PARAM_STR)) && ($this->_req->bindValue(':pwd', $pwd, PDO::PARAM_STR)) && ($this->_req->bindValue(':statue', 1, PDO::PARAM_INT)) && ($this->_req->bindValue(':mood', 7, PDO::PARAM_INT)) && ($this->_req->bindValue(':role', 2, PDO::PARAM_INT)))
+                if(($this->_req->bindValue(':firstname',$_POST['firstname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':lastname', $_POST['lastname'], PDO::PARAM_STR)) && ($this->_req->bindValue(':email', $_POST['email'], PDO::PARAM_STR)) && ($this->_req->bindValue(':pwd', $pwd, PDO::PARAM_STR)))
                 {
                     if($this->_req->execute())
                     {
@@ -90,7 +91,7 @@ class UsersModel extends CoreModel
         {
           if(($this->_req = $this->getDb()->prepare($sql)) !== false)
           {
-            if(($this->_req->bindValue(':firstname', $_POST['firstname'])) && ($this->_req->bindValue(':lastname', $_POST['lastname'])) && ($this->_req->bindValue(':mail', $_POST['email'])) && ($this->_req->bindValue(':pwd', $pwd)) && ($this->_req->bindValue(':statue', 1)) && ($this->_req->bindvalue(':mood', 7))&& ($this->_req->bindValue(':role', 1)))
+            if(($this->_req->bindValue(':firstname', $_POST['firstname'])) && ($this->_req->bindValue(':lastname', $_POST['lastname'])) && ($this->_req->bindValue(':mail', $_POST['email'])) && ($this->_req->bindValue(':pwd', $pwd)))
             {
               if($this->_req->execute())
               {
@@ -126,6 +127,32 @@ class UsersModel extends CoreModel
         catch(PDOException $e)
         {
             die($e->getMessage());
+        }
+    }
+
+#Méthodes de récupération des playlists d'un utilisateur
+    public function readPlaylists($id)
+    {
+        $sql = "SELECT * FROM playlists WHERE use_id = :id";
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->bindValue(':id', $id, PDO::PARAM_INT);
+        $this->_req->execute();
+        return $this->_req->fetchAll(PDO::FETCH_ASSOC);
+    }
+#Methodes pour compter les playlist d'un utilisateur
+    public function countPlaylists($id)
+    {
+        $sql = "SELECT COUNT(play_id) AS count FROM playlists WHERE use_id = :id";
+        if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+        {
+            if(($this->_req->bindValue(':id', $id, PDO::PARAM_INT)))
+            {
+                if($this->_req->execute())
+                {
+                    $datas = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $datas['count'];
+                }
+            }
         }
     }
 
