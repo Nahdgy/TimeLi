@@ -19,7 +19,13 @@ class MusicModel extends CoreModel
     }
     public function search($query)
     {
-        $sql = "SELECT *, aut_name, alb_title FROM music JOIN authors USING (aut_id) JOIN album USING (alb_id) WHERE mus_title LIKE '%$query%' OR art_name LIKE '%$query%' OR alb_title LIKE '%$query%'";
+        $sql = "SELECT m.*, aut_name, alb_title 
+                FROM music m 
+                JOIN authors a ON m.aut_id = a.aut_id 
+                JOIN album al ON m.alb_id = al.alb_id 
+                WHERE mus_title LIKE :query 
+                OR aut_name LIKE :query 
+                OR alb_title LIKE :query";
 
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute(['query' => "%$query%"]);

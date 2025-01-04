@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="assets/CSS/responsive.css">
     <link rel="script" href="assets/JS/main.js">
     <script src="assets/JS/main.js"></script>
+    <script src="assets/JS/search.js"></script>
     <!-- <style>
         html,
 body {

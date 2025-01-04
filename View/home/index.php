@@ -3,6 +3,10 @@
     <div class="sidebar bg-dark text-white" style="width: 250px; min-height: 100vh;">
         <h1 class="p-3">TimeLi</h1>
         <!-- Vous pouvez ajouter ici d'autres éléments de navigation -->
+         <form id="search-form" class="position-relative">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une musique">
+            <div id="searchResults" class="position-absolute w-100 bg-dark" style="z-index: 1000; display: none;"></div>
+         </form>
     </div>
 
     <!-- Contenu principal -->
@@ -31,9 +35,10 @@
                 <?php endif; ?>
             </ul>
             <div class="text-center">
-                <a href="index.php?route=addPlaylist" class="btn btn-primary rounded-circle">+</a>
+                <a href="?ctrl=playlist&action=create" class="btn btn-primary rounded-circle">+</a>
             </div>
         </div>
     </div>
 </div>
+<script src="assets/JS/search.js"></script>
 

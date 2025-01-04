@@ -1,5 +1,8 @@
 <?php
 session_unset();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ob_start();
 $page = '';
  require_once 'Config/config.php';
  require_once 'Functions/autoloader.php';

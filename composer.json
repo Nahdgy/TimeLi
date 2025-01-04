@@ -1,0 +1,19 @@
+{
+    "name": "wheee/time-li",
+    "description": "package manager",
+    "type": "metapackage",
+    "autoload": {
+        "psr-4": {
+            "Wheee\\TimeLi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nahdgy",
+            "email": "113891480+Nahdgy@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

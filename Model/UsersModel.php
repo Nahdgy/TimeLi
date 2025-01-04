@@ -16,7 +16,7 @@ class UsersModel extends CoreModel
 #Méthodes de récupération de tous les utilisateurs présents dans la base de données
     public function readAll()
     {
-        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id AS roleId FROM users WHERE roleId = 2";
+        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id FROM users WHERE rol_Id = 2";
 
         try
         {
@@ -36,7 +36,7 @@ class UsersModel extends CoreModel
 #Méthodes de récupération d'un utilisateur présent dans la base de données
     public function readOne($id)
     {
-        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id AS roleId FROM users WHERE use_id = :id";
+        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id FROM users WHERE use_id = :id";
         try
         {
             if(($this->_req = $this->getDb()->prepare($sql)) !== false)
