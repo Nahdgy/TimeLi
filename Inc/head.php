@@ -18,6 +18,8 @@
     <link rel="script" href="assets/JS/main.js">
     <script src="assets/JS/main.js"></script>
     <script src="assets/JS/search.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARtpeZumIiApsKHYITraRSv_YSkBhPVMs&libraries=places&callback=initMap" async defer></script>
+    <script src="assets/JS/routeCalculator.js"></script>
     <!-- <style>
         html,
 body {

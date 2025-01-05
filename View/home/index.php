@@ -35,7 +35,7 @@
                 <?php endif; ?>
             </ul>
             <div class="text-center">
-                <a href="?ctrl=playlist&action=create" class="btn btn-primary rounded-circle">+</a>
+                <a href="?ctrl=playlists&action=newPlaylist" class="btn btn-primary rounded-circle">+</a>
             </div>
         </div>
     </div>

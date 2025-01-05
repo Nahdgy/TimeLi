@@ -72,6 +72,22 @@ class PlaylistModel extends CoreModel
         }
     }
 
+    public function searchGenres($query)
+    {
+        $sql = "SELECT typ_id, typ_label 
+                FROM type 
+                WHERE typ_label LIKE :query 
+                ORDER BY typ_label 
+                LIMIT 10";
+                
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->execute([
+            ':query' => '%' . $query . '%'
+        ]);
+        
+        return $this->_req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function create($data)
     {
 
