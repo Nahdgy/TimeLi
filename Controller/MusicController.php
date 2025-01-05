@@ -84,45 +84,91 @@ class MusicController
     
     public function searchAjax()
     {
-        // Désactiver tout output automatique
+        // Désactiver l'affichage des erreurs PHP
+        ini_set('display_errors', 0);
+        error_reporting(0);
+        
+        // S'assurer qu'aucun output n'a été envoyé avant
+        if (headers_sent($filename, $linenum)) {
+            error_log("Headers already sent in $filename on line $linenum");
+            echo json_encode(['error' => 'Internal server error']);
+            exit;
+        }
+
+        // Nettoyer tout buffer de sortie existant
         ob_clean();
         
-        // Définir l'en-tête JSON avant toute sortie
+        // Définir les headers
         header('Content-Type: application/json');
-
+        header('Cache-Control: no-cache, must-revalidate');
+        
         try {
             if (!isset($_GET['query'])) {
-                echo json_encode(['error' => 'Requête manquante']);
-                exit;
+                throw new Exception('Requête invalide');
             }
 
             $query = $_GET['query'];
-            $results = $this->musicModel->search($query);
-
-            // Si pas de résultats locaux, chercher sur Spotify
-            if (empty($results)) {
-                $spotifyResults = $this->spotifyApiHandler->searchTracks($query);
-                
-                if (!empty($spotifyResults['tracks']['items'])) {
-                    $tracks = [];
-                    foreach ($spotifyResults['tracks']['items'] as $track) {
-                        $tracks[] = [
-                            'mus_id' => $track['id'],
-                            'mus_title' => $track['name'],
-                            'aut_name' => $track['artists'][0]['name'],
-                            'alb_title' => $track['album']['name']
-                        ];
-                    }
-                    echo json_encode($tracks);
-                    exit;
-                }
+            
+            if (!isset($_SESSION['timeLi']['user']) || !$_SESSION['timeLi']['user']->getSpotifyAccessToken()) {
+                throw new Exception('Token d\'accès non disponible');
             }
 
-            echo json_encode($results);
-            exit;
-
+            $spotify_config = require './Config/Spotify.php';
+            $spotifyApiHandler = new SpotifyApiHandler($spotify_config['client_id'], $spotify_config['client_secret']);
+            
+            $results = $spotifyApiHandler->searchTracks($query, $_SESSION['timeLi']['user']->getSpotifyAccessToken());
+            
+            if (!empty($results['tracks']['items'])) {
+                $tracks = array_map(function($track) {
+                    return [
+                        'mus_id' => $track['id'],
+                        'mus_title' => htmlspecialchars($track['name']),
+                        'aut_name' => htmlspecialchars($track['artists'][0]['name'])
+                    ];
+                }, $results['tracks']['items']);
+                
+                echo json_encode($tracks, JSON_UNESCAPED_UNICODE);
+            } else {
+                echo json_encode([]);
+            }
+            
         } catch (Exception $e) {
+            error_log('Erreur de recherche Spotify: ' . $e->getMessage());
             echo json_encode(['error' => $e->getMessage()]);
+        }
+        exit;
+    }
+
+    public function track()
+    {
+        if (!isset($_GET['id'])) {
+            header('Location: index.php?ctrl=home&action=index');
+            exit;
+        }
+
+        try {
+            $spotify_config = require './Config/Spotify.php';
+            $spotifyApiHandler = new SpotifyApiHandler($spotify_config['client_id'], $spotify_config['client_secret']);
+            
+            // Récupérer les détails de la piste
+            $track_id = $_GET['id'];
+            $track_details = $spotifyApiHandler->getTrack($track_id, $_SESSION['timeLi']['user']->getSpotifyAccessToken());
+            
+            // Passer les données à la vue
+            $track = [
+                'id' => $track_details['id'],
+                'title' => $track_details['name'],
+                'artist' => $track_details['artists'][0]['name'],
+                'album' => $track_details['album']['name'],
+                'image' => $track_details['album']['images'][0]['url'] ?? null,
+                'preview_url' => $track_details['preview_url'],
+                'spotify_url' => $track_details['external_urls']['spotify']
+            ];
+            
+            include './View/music/track.php';
+            
+        } catch (Exception $e) {
+            header('Location: index.php?ctrl=home&action=index&error=' . urlencode($e->getMessage()));
             exit;
         }
     }

@@ -40,5 +40,5 @@
         </div>
     </div>
 </div>
-<script src="assets/JS/search.js"></script>
+<script src="assets/JS/musicSearch.js"></script>
 

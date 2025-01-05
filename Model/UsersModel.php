@@ -181,6 +181,26 @@ class UsersModel extends CoreModel
 
     }   
     
+    public function updateSpotifyCredentials($userId, $spotifyUserId, $accessToken, $refreshToken)
+    {
+        $sql = "UPDATE users SET 
+                spotify_user_id = :spotify_user_id,
+                spotify_access_token = :access_token,
+                spotify_refresh_token = :refresh_token
+                WHERE use_id = :user_id";
+                
+        try {
+            $stmt = $this->getDb()->prepare($sql);
+            return $stmt->execute([
+                'spotify_user_id' => $spotifyUserId,
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken,
+                'user_id' => $userId
+            ]);
+        } catch(PDOException $e) {
+            die($e->getMessage());
+        }
+    }
 }
 
 ?>

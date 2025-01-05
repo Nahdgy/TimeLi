@@ -1,7 +1,15 @@
 <?php
 
-class UsersController 
+class UsersController
 {
+    private $spotifyApiHandler;
+
+    public function __construct()
+    {
+        $spotify_config = require_once './Config/Spotify.php';
+        $this->spotifyApiHandler = new SpotifyApiHandler($spotify_config['client_id'], $spotify_config['client_secret']);
+    }
+
     public function landing()
     {
         include './View/landing/index.php';
@@ -142,7 +150,92 @@ class UsersController
             header('Location: index.php');
         }
     }
+    public function linkSpotify()
+    {
+        if (!isset($_SESSION['timeLi']['user'])) {
+            header('Location: index.php?ctrl=Users&action=login&role=user');
+            exit;
+        }
 
+        try {
+            $spotify_config = require './Config/Spotify.php';
+            
+            // Vérifier que les configurations sont présentes
+            if (empty($spotify_config['client_id']) || empty($spotify_config['client_secret'])) {
+                throw new Exception('Configuration Spotify manquante');
+            }
+
+            // Si nous n'avons pas encore de code d'autorisation
+            if (!isset($_GET['code'])) {
+                $scopes = 'user-read-private user-read-email user-library-read playlist-read-private';
+                
+                // URL exacte comme configurée dans le Dashboard Spotify
+                $redirect_uri = 'https://f605-2001-861-5d90-f9f0-59ae-ccb5-b483-e82c.ngrok-free.app/TimeLi/index.php?ctrl=Users&action=linkSpotify';
+                
+                // Assurez-vous que cette URL correspond EXACTEMENT à celle dans votre Dashboard Spotify
+                error_log('Redirect URI: ' . $redirect_uri);
+                
+                // Construction de l'URL avec tous les paramètres requis
+                $params = [
+                    'client_id' => $spotify_config['client_id'],
+                    'response_type' => 'code',
+                    'redirect_uri' => $redirect_uri,
+                    'scope' => $scopes,
+                    'show_dialog' => 'true'
+                ];
+                
+                $auth_url = 'https://accounts.spotify.com/authorize?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+                
+                error_log('URL complète: ' . $auth_url);
+                
+                header('Location: ' . $auth_url);
+                exit;
+            }
+
+            // Le reste du code pour gérer le retour de Spotify...
+            $spotifyHandler = new SpotifyApiHandler($spotify_config['client_id'], $spotify_config['client_secret']);
+            
+            // Échange du code contre des tokens
+            $tokens = $this->spotifyApiHandler->getAccessToken($_GET['code']);
+            
+            if (!$tokens) {
+                throw new Exception('Échec de la récupération des tokens');
+            }
+            
+            // Récupération des informations de l'utilisateur Spotify
+            $spotify_user = $this->spotifyApiHandler->getCurrentUser($tokens['access_token']);
+            
+            if (!$spotify_user) {
+                throw new Exception('Échec de la récupération du profil utilisateur');
+            }
+            
+            // Mise à jour de la base de données
+            $model = new UsersModel();
+            $success = $model->updateSpotifyCredentials(
+                $_SESSION['timeLi']['user']->getId(),
+                $spotify_user['id'],
+                $tokens['access_token'],
+                $tokens['refresh_token']
+            );
+            
+            if (!$success) {
+                throw new Exception('Échec de la mise à jour des informations Spotify');
+            }
+            
+            // Mise à jour de la session
+            $_SESSION['timeLi']['user']->setSpotifyUserId($spotify_user['id']);
+            $_SESSION['timeLi']['user']->setSpotifyAccessToken($tokens['access_token']);
+            $_SESSION['timeLi']['user']->setSpotifyRefreshToken($tokens['refresh_token']);
+            
+            header('Location: index.php?ctrl=home&action=index&spotify=success');
+            exit;
+            
+        } catch (Exception $e) {
+            error_log('Erreur Spotify: ' . $e->getMessage());
+            header('Location: index.php?ctrl=home&action=index&error=' . urlencode($e->getMessage()));
+            exit;
+        }
+    }
 }
 
 ?>

@@ -10,6 +10,9 @@ class Users extends CoreClass
     private $use_statue;
     private $moo_id;
     private $rol_id;
+    private $spotify_user_id;
+    private $spotify_access_token;
+    private $spotify_refresh_token;
     
     public function getId()
     {
@@ -51,6 +54,21 @@ class Users extends CoreClass
         return $this->rol_id;
     }
 
+    public function getSpotifyUserId()
+    {
+        return $this->spotify_user_id;
+    }
+
+    public function getSpotifyAccessToken()
+    {
+        return $this->spotify_access_token;
+    }
+
+    public function getSpotifyRefreshToken()
+    {
+        return $this->spotify_refresh_token;
+    }
+
     public function setId($use_id)
     {
         $this->use_id = $use_id;
@@ -89,5 +107,20 @@ class Users extends CoreClass
     public function setRolId($rol_id)
     {
         $this->rol_id = $rol_id;
+    }
+
+    public function setSpotifyUserId($spotify_user_id)
+    {
+        $this->spotify_user_id = $spotify_user_id;
+    }
+
+    public function setSpotifyAccessToken($spotify_access_token)
+    {
+        $this->spotify_access_token = $spotify_access_token;
+    }
+
+    public function setSpotifyRefreshToken($spotify_refresh_token)
+    {
+        $this->spotify_refresh_token = $spotify_refresh_token;
     }
 }
