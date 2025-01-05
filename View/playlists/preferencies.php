@@ -120,4 +120,3 @@
     <button type="submit">Valider</button>
 </form>
 
-<script src="assets/JS/genreSearch.js"></script>

@@ -12,14 +12,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chango&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="assets/CSS/style.css">
     <link rel="stylesheet" href="assets/CSS/responsive.css">
-    <link rel="script" href="assets/JS/main.js">
-    <script src="assets/JS/main.js"></script>
-    <script src="assets/JS/musicSearch.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARtpeZumIiApsKHYITraRSv_YSkBhPVMs&libraries=places&callback=initMap" async defer></script>
+
+    <!-- Scripts Leaflet (map) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Scripts JS -->
     <script src="assets/JS/routeCalculator.js"></script>
+    <script src="assets/JS/genreSearch.js"></script>
+    <script src="assets/JS/musicSearch.js"></script>
+    <script src="assets/JS/main.js"></script>
+    
     <!-- <style>
         html,
 body {

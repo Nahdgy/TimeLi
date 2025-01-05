@@ -1,93 +1,167 @@
-
-html,
-body {
-  position: relative;
-  height: 100%;
+/* Styles de base */
+html, body {
+    position: relative;
+    height: 100%;
+    background-color: #2d2d2d;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
 }
 
-body {
-  background: #eee;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  color: #000;
-  margin: 0;
-  padding: 0;
+/* Styles généraux */
+.bg-dark {
+    background-color: #1a1a1a !important;
 }
 
-.swiper {
-  width: 100%;
-  height: 100%;
+.bg-body-secondary {
+    --bs-bg-opacity: 0;
+    background-color: #2d2d2d !important;
 }
 
-.swiper-slide {
-  text-align: center;
-  font-family: 'Chango', sans-serif;
-  font-size: 18px;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.bg-purple {
-  background-color: #6f42c1;
-}
-
-.carousel-item {
-  transition: transform .6s ease-in-out;
-}
-
-.carousel-indicators [data-bs-target] {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.admin-login-container {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-}
-.sidebar {
-  background-color: #1a1a1a !important;
-}
-
-.main-content {
-  background-color: #2d2d2d !important;
-}
-
+/* Cards */
 .card {
-  background-color: #333333 !important;
-  border: none;
-}
-.btn-primary {
-  background-color: #8ab4f8;
-  border-color: #8ab4f8;
+    background-color: #333333 !important;
+    border: none;
+    color: white;
 }
 
-.btn-primary:hover {
-  background-color: #7aa3e7;
-  border-color: #7aa3e7;
+.card-body {
+    color: white;
+}
+
+/* Formulaires */
+.form-control {
+    background-color: #404040;
+    border: 1px solid #4a4a4a;
+    color: white;
 }
 
 .form-control:focus {
-  border-color: #6f42c1;
-  box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+    background-color: #404040;
+    border-color: #8ab4f8;
+    box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
+    color: white;
 }
 
+.form-control::placeholder {
+    color: #999;
+}
+
+.form-floating label {
+    color: #999;
+}
+
+/* Boutons */
+.btn-primary {
+    background-color: #8ab4f8;
+    border-color: #8ab4f8;
+}
+
+.btn-primary:hover {
+    background-color: #7aa3e7;
+    border-color: #7aa3e7;
+}
+
+.btn-secondary {
+    background-color: #404040;
+    border-color: #404040;
+}
+
+.btn-secondary:hover {
+    background-color: #4a4a4a;
+    border-color: #4a4a4a;
+}
+
+/* Liens */
 a {
-  color: #6f42c1;
+    color: #8ab4f8;
+    text-decoration: none;
 }
 
 a:hover {
-  color: #553098;
+    color: #7aa3e7;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #1a1a1a !important;
+    color: white;
+}
+
+/* Résultats de recherche */
+.address-results {
+    background-color: #333333;
+    color: white;
+}
+
+.address-item {
+    transition: background-color 0.2s;
+    color: #404040;
+}
+
+.address-item:hover {
+    background-color: #404040;
+    color: white;
+}
+
+/* Mood cards */
+.mood-card {
+    background-color: #333333;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.mood-card:hover {
+    border-color: #8ab4f8;
+}
+
+.mood-card.selected {
+    border-color: white;
+}
+
+/* Audio player */
+audio {
+    background-color: #404040;
+    border-radius: 5px;
+}
+
+/* Alert messages */
+.alert-danger {
+    background-color: #442726;
+    border-color: #842029;
+    color: #ea868f;
+}
+
+/* Inputs spéciaux */
+select.form-control {
+    background-color: #404040;
+    color: white;
+}
+
+select.form-control option {
+    background-color: #333333;
+    color: white;
+}
+
+/* Search results */
+#searchResults {
+    background-color: #333333 !important;
+    border: 1px solid #4a4a4a;
+}
+
+#searchResults div {
+    color: white;
+}
+
+#searchResults div:hover {
+    background-color: #404040;
+}
+
+/* Map container */
+#map {
+    border-radius: 5px;
+    border: 1px solid #4a4a4a;
+}
+
+#map .leaflet-routing-container {
+    background-color: #613A91;
 }

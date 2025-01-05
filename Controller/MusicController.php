@@ -165,7 +165,7 @@ class MusicController
                 'spotify_url' => $track_details['external_urls']['spotify']
             ];
             
-            include './View/music/track.php';
+            include './View/musics/track.php';
             
         } catch (Exception $e) {
             header('Location: index.php?ctrl=home&action=index&error=' . urlencode($e->getMessage()));

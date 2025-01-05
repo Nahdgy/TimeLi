@@ -1,73 +1,164 @@
 let map;
-let autocompleteOrigin;
-let autocompleteDestination;
-let directionsService;
-let directionsRenderer;
+let routingControl;
 
-function initMap() 
-{
-    // Initialisation de la carte
-    map = new google.maps.Map(document.getElementById("map"), 
-    {
-        center: { lat: 46.603354, lng: 1.888334 }, // Centre de la France
-        zoom: 6,
-    });
+function initMap() {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) {
+        console.warn('Élément map non trouvé');
+        return;
+    }
 
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(map);
+    // Initialisation de la carte centrée sur la France
+    map = L.map('map').setView([46.603354, 1.888334], 6);
+
+    // Ajout de la couche OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Initialisation du géocodeur
+    const geocoder = L.Control.geocoder({
+        defaultMarkGeocode: false
+    }).addTo(map);
 
     // Initialisation des champs d'autocomplétion
-    autocompleteOrigin = new google.maps.places.Autocomplete(
-        document.getElementById("origin"),
-        { types: ["address"] }
-    );
+    const originInput = document.getElementById('origin');
+    const destinationInput = document.getElementById('destination');
 
-    autocompleteDestination = new google.maps.places.Autocomplete(
-        document.getElementById("destination"),
-        { types: ["address"] }
-    );
+    // Écouteurs d'événements pour la recherche d'adresses
+    originInput.addEventListener('change', () => searchAddress(originInput.value, 'origin'));
+    destinationInput.addEventListener('change', () => searchAddress(destinationInput.value, 'destination'));
 
-    // Écouteurs d'événements pour le calcul d'itinéraire
-    document.getElementById("origin").addEventListener("change", calculateRoute);
-    document.getElementById("destination").addEventListener("change", calculateRoute);
+    // Ajout de l'autocomplétion pour les champs d'adresse
+    setupAutocomplete('origin');
+    setupAutocomplete('destination');
 }
 
-function calculateRoute() 
-{
-    const origin = document.getElementById("origin").value;
-    const destination = document.getElementById("destination").value;
+function searchAddress(address, type) {
+    if (!address) return;
 
-    if (origin && destination) 
-        {
-        directionsService.route(
-            {
-                origin: origin,
-                destination: destination,
-                travelMode: google.maps.TravelMode.DRIVING,
-            },
-            (response, status) => {
-                if (status === "OK") 
-                {
-                    directionsRenderer.setDirections(response);
-                    
-                    // Récupération du temps de trajet en minutes
-                    const durationInMinutes = Math.round(
-                        response.routes[0].legs[0].duration.value / 60
-                    );
-                    
-                    // Affichage du temps de trajet
-                    document.getElementById("duration").innerHTML = 
-                        `Temps de trajet estimé : ${durationInMinutes} minutes`;
-                    
-                    // Stockage dans le champ caché
-                    document.getElementById("travel_time").value = durationInMinutes;
-                } 
-                else 
-                {
-                    window.alert("Impossible de calculer l'itinéraire : " + status);
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                const location = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                
+                if (type === 'origin') {
+                    window.originCoords = location;
+                } else {
+                    window.destinationCoords = location;
+                }
+
+                if (window.originCoords && window.destinationCoords) {
+                    calculateRoute();
                 }
             }
-        );
+        });
+}
+
+function calculateRoute() {
+    if (!window.originCoords || !window.destinationCoords) return;
+
+    // Si un itinéraire existe déjà, le supprimer
+    if (routingControl) {
+        map.removeControl(routingControl);
     }
-} 
+
+    // Création du nouvel itinéraire
+    routingControl = L.Routing.control({
+        waypoints: [
+            L.latLng(window.originCoords[0], window.originCoords[1]),
+            L.latLng(window.destinationCoords[0], window.destinationCoords[1])
+        ],
+        router: L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1'
+        }),
+        lineOptions: {
+            styles: [{color: '#3388ff', weight: 6}]
+        }
+    }).addTo(map);
+
+    // Mise à jour du temps de trajet
+    routingControl.on('routesfound', function(e) {
+        const routes = e.routes;
+        const durationInMinutes = Math.round(routes[0].summary.totalTime / 60);
+        
+        document.getElementById('duration').innerHTML = 
+            `Temps de trajet estimé : ${durationInMinutes} minutes`;
+        document.getElementById('travel_time').value = durationInMinutes;
+    });
+}
+
+function setupAutocomplete(inputId) {
+    const input = document.getElementById(inputId);
+    const resultsDiv = document.createElement('div');
+    resultsDiv.className = 'address-results';
+    resultsDiv.style.cssText = 'display: none; position: absolute; z-index: 1000; background: white; width: 100%; max-height: 200px; overflow-y: auto; border: 1px solid #ccc; border-radius: 4px;';
+    input.parentNode.style.position = 'relative';
+    input.parentNode.appendChild(resultsDiv);
+
+    let timeoutId;
+
+    input.addEventListener('input', function() {
+        clearTimeout(timeoutId);
+        const query = this.value;
+
+        if (query.length < 3) {
+            resultsDiv.style.display = 'none';
+            return;
+        }
+
+        timeoutId = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+                .then(response => response.json())
+                .then(data => {
+                    resultsDiv.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(place => {
+                            const div = document.createElement('div');
+                            div.className = 'address-item';
+                            div.style.cssText = 'padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;';
+                            div.innerHTML = place.display_name;
+                            div.addEventListener('mouseenter', () => {
+                                div.style.backgroundColor = '#f0f0f0';
+                            });
+                            div.addEventListener('mouseleave', () => {
+                                div.style.backgroundColor = 'white';
+                            });
+                            div.addEventListener('click', () => {
+                                input.value = place.display_name;
+                                resultsDiv.style.display = 'none';
+                                if (inputId === 'origin') {
+                                    window.originCoords = [parseFloat(place.lat), parseFloat(place.lon)];
+                                } else {
+                                    window.destinationCoords = [parseFloat(place.lat), parseFloat(place.lon)];
+                                }
+                                if (window.originCoords && window.destinationCoords) {
+                                    calculateRoute();
+                                }
+                            });
+                            resultsDiv.appendChild(div);
+                        });
+                        resultsDiv.style.display = 'block';
+                    } else {
+                        resultsDiv.style.display = 'none';
+                    }
+                });
+        }, 300);
+    });
+
+    // Cacher les résultats quand on clique en dehors
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.style.display = 'none';
+        }
+    });
+}
+
+// Initialisation de la carte au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+        initMap();
+    }
+}); 
