@@ -1,4 +1,18 @@
 <?php
+
+// Charger la configuration ngrok
+require_once 'Config/NgrokConfig.php';
+$ngrokConfig = new NgrokConfig();
+$baseUrl = $ngrokConfig->getCurrentUrl();
+
+if (!$baseUrl) {
+    die("L'URL ngrok n'est pas configurée. Veuillez exécuter ./start-dev.sh");
+}
+
+// Définir l'URL de base pour l'application
+define('BASE_URL', $baseUrl);
+
+
 session_unset();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

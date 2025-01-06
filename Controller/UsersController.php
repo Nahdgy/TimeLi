@@ -1,4 +1,5 @@
 <?php
+require_once './Config/NgrokConfig.php';
 
 class UsersController
 {
@@ -169,11 +170,14 @@ class UsersController
             if (!isset($_GET['code'])) {
                 $scopes = 'user-read-private user-read-email user-library-read playlist-read-private';
                 
-                // URL exacte comme configurée dans le Dashboard Spotify
-                $redirect_uri = 'https://f605-2001-861-5d90-f9f0-59ae-ccb5-b483-e82c.ngrok-free.app/TimeLi/index.php?ctrl=Users&action=linkSpotify';
+                // Récupérer l'URL ngrok depuis le fichier de configuration
+                $ngrokConfig = new NgrokConfig();
+                $ngrokUrl = $ngrokConfig->getCurrentUrl();
+                if (!$ngrokUrl) {
+                    throw new Exception('URL ngrok non configurée');
+                }
                 
-                // Assurez-vous que cette URL correspond EXACTEMENT à celle dans votre Dashboard Spotify
-                error_log('Redirect URI: ' . $redirect_uri);
+                $redirect_uri = $ngrokUrl . '/TimeLi/index.php?ctrl=Users&action=linkSpotify';
                 
                 // Construction de l'URL avec tous les paramètres requis
                 $params = [
@@ -184,9 +188,7 @@ class UsersController
                     'show_dialog' => 'true'
                 ];
                 
-                $auth_url = 'https://accounts.spotify.com/authorize?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-                
-                error_log('URL complète: ' . $auth_url);
+                $auth_url = 'https://accounts.spotify.com/authorize?' . http_build_query($params);
                 
                 header('Location: ' . $auth_url);
                 exit;

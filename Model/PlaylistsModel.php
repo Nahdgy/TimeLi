@@ -90,12 +90,37 @@ class PlaylistsModel extends CoreModel
 
     public function create($data)
     {
+        try 
+        {
+            $sql = "INSERT INTO playlist (play_title, play_duration, play_creation, play_visibility, use_id) 
+                    VALUES (:title, :duration, NOW(), :visibility, :use_id)";
+            
+            $duration = $data['travel_time'];
+            
+            $stmt = $this->getDb()->prepare($sql);
+            $stmt->execute([
+                ':title' => "Playlist " . date('Y-m-d H:i:s'),
+                ':duration' => $duration,
+                ':visibility' => 'private',
+                ':use_id' => $data['use_id']
+            ]);
 
+            return $this->getDb()->lastInsertId();
+        } 
+        catch (PDOException $e) 
+        {
+            throw new Exception("Erreur lors de la création de la playlist: " . $e->getMessage());
+        }
     }
 
     public function addMusics($data)
     {
-
+        $sql = "INSERT INTO playlist_music (play_id, mus_id) VALUES (:playlist_id, :music_id)";
+        $stmt = $this->getDb()->prepare($sql);
+        return $stmt->execute([
+            ':playlist_id' => $data['playlist_id'],
+            ':music_id' => $data['music_id']
+        ]);
     }
 
     public function deleteAll($id)
