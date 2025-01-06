@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchResults = document.getElementById('genreResults');
     const selectedGenresContainer = document.getElementById('selectedGenres');
     const genreCountElement = document.getElementById('genreCount');
+    let selectedGenres = new Set(); // Pour stocker les IDs des genres sélectionnés
     
     if (!searchInput || !searchResults || !selectedGenresContainer) {
         console.error('Elements non trouvés');
@@ -10,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let timeoutId;
-    let selectedGenres = new Set(); // Pour stocker les genres sélectionnés
 
     searchInput.addEventListener('input', function() {
         clearTimeout(timeoutId);
@@ -23,17 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         timeoutId = setTimeout(() => {
             fetch(`index.php?ctrl=playlists&action=searchGenres&query=${encodeURIComponent(query)}`)
-                .then(response => {
-                    // Afficher les headers de la réponse
-                    console.log('Headers:', Object.fromEntries(response.headers.entries()));
-                    // Récupérer d'abord le texte brut
-                    return response.text();
-                })
-                .then(text => {
-                    // Afficher le texte brut reçu
-                    console.log('Réponse brute:', text);
-                    // Tenter de parser le JSON
-                    const data = JSON.parse(text);
+                .then(response => response.json())
+                .then(data => {
                     if (Array.isArray(data) && data.length > 0) {
                         searchResults.innerHTML = data.map(genre => `
                             <div class="p-2 search-result" data-id="${genre.id}" data-name="${genre.name}">
@@ -47,30 +38,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => {
-                    console.error('Erreur complète:', error);
+                    console.error('Erreur:', error);
                     searchResults.innerHTML = '<div class="p-2">Une erreur est survenue</div>';
                     searchResults.style.display = 'block';
                 });
         }, 300);
     });
 
+    // Fonction pour ajouter un tag de genre
     function addGenreTag(id, name) {
         const tag = document.createElement('div');
         tag.className = 'badge bg-primary me-2 mb-2 p-2';
         tag.innerHTML = `
             ${name}
-            <input type="hidden" name="genres[]" value="${id}">
-            <span class="ms-2" style="cursor: pointer;" onclick="removeGenre(this, '${id}')">&times;</span>
+            <span class="ms-2" style="cursor: pointer;" onclick="removeGenre('${id}')">&times;</span>
         `;
         selectedGenresContainer.appendChild(tag);
         updateGenreCount();
+        updateSelectedGenresInput(Array.from(selectedGenres));
     }
 
     // Fonction globale pour supprimer un genre
-    window.removeGenre = function(element, id) {
+    window.removeGenre = function(id) {
         selectedGenres.delete(id);
-        element.closest('.badge').remove();
+        const tags = selectedGenresContainer.children;
+        for (let tag of tags) {
+            if (tag.querySelector(`[onclick="removeGenre('${id}')"]`)) {
+                tag.remove();
+                break;
+            }
+        }
         updateGenreCount();
+        updateSelectedGenresInput(Array.from(selectedGenres));
     };
 
     // Cacher les résultats quand on clique ailleurs
@@ -80,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Gestion de la sélection des genres
     searchResults.addEventListener('click', function(e) {
         const resultElement = e.target.closest('.search-result');
         if (!resultElement) return;
@@ -104,7 +104,14 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResults.style.display = 'none';
     });
 
+    // Fonction pour mettre à jour le compteur de genres
     function updateGenreCount() {
         genreCountElement.textContent = selectedGenres.size;
+    }
+
+    // Fonction pour mettre à jour le champ caché des genres
+    function updateSelectedGenresInput(genres) {
+        const genresString = Array.from(selectedGenres).join(',');
+        document.getElementById('selectedGenresInput').value = genresString;
     }
 });

@@ -1,0 +1,1 @@
+<!-- a garder pour la positibilité d'enregister des trajets et leur appliqué uniquement les autre paramètres -->

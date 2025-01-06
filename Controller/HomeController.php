@@ -4,8 +4,8 @@ class HomeController
 {
     public function index()
     {
-      $modelPlaylist = new PlaylistModel();
-      $datas = $modelPlaylist->readAll();
+      $modelPlaylists = new PlaylistsModel();
+      $datas = $modelPlaylists->readAll();
 
        $playlists = [];
 
