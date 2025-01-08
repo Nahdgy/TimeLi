@@ -133,6 +133,34 @@ class PlaylistsModel extends CoreModel
 
     }
 
+    public function removeMusic($data)
+    {
+        $sql = "DELETE FROM playlist_music 
+                WHERE play_id = :playlist_id 
+                AND mus_id = :music_id";
+                
+        $stmt = $this->getDb()->prepare($sql);
+        return $stmt->execute([
+            ':playlist_id' => $data['playlist_id'],
+            ':music_id' => $data['music_id']
+        ]);
+    }
+
+    public function updateDuration($playlist_id)
+    {
+        $sql = "UPDATE playlist p 
+                SET play_duration = (
+                    SELECT SUM(m.mus_duration) 
+                    FROM music m 
+                    JOIN playlist_music pm ON m.mus_id = pm.mus_id 
+                    WHERE pm.play_id = :playlist_id
+                )
+                WHERE p.play_id = :playlist_id";
+                
+        $stmt = $this->getDb()->prepare($sql);
+        return $stmt->execute([':playlist_id' => $playlist_id]);
+    }
+
 }
 
 ?>

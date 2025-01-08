@@ -180,4 +180,29 @@ class PlaylistsController
             ]);
         }
     }
+
+    public function removeMusic()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['playlist_id'], $_POST['music_id'])) {
+            $modelPlaylist = new PlaylistsModel();
+            
+            try {
+                // Supprimer la musique de la playlist
+                $modelPlaylist->removeMusic([
+                    'playlist_id' => $_POST['playlist_id'],
+                    'music_id' => $_POST['music_id']
+                ]);
+                
+                // Mettre à jour la durée totale de la playlist
+                $modelPlaylist->updateDuration($_POST['playlist_id']);
+                
+                header('Location: index.php?ctrl=Playlists&action=show&id=' . $_POST['playlist_id']);
+                exit;
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Erreur lors de la suppression de la musique";
+                header('Location: index.php?ctrl=Playlists&action=show&id=' . $_POST['playlist_id']);
+                exit;
+            }
+        }
+    }
 }
