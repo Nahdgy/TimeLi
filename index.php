@@ -20,7 +20,11 @@ ob_start();
 $page = '';
  require_once 'Config/config.php';
  require_once 'Functions/autoloader.php';
- session_start();
+ // Configuration sécurisée des sessions
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_samesite', 'Strict');
+session_start();
  require_once 'Functions/tools.php';
  
  $title = 'TimeLi';

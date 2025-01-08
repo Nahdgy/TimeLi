@@ -201,6 +201,17 @@ class UsersModel extends CoreModel
             die($e->getMessage());
         }
     }
+
+    public function anonymizeUser($userId) {
+        $sql = "UPDATE users 
+                SET use_firstname = 'Anonyme',
+                    use_lastname = 'Anonyme',
+                    use_email = NULL,
+                    use_pwd = NULL,
+                    spotify_access_token = NULL,
+                    spotify_refresh_token = NULL
+                WHERE use_id = :id";
+    }
 }
 
 ?>

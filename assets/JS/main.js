@@ -22,3 +22,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function setCookieConsent() {
+    if (!localStorage.getItem('cookieConsent')) {
+        const banner = document.createElement('div');
+        banner.innerHTML = `
+            <div class="cookie-banner">
+                <p>Nous utilisons des cookies pour améliorer votre expérience.</p>
+                <button onclick="acceptCookies()">Accepter</button>
+                <button onclick="refuseCookies()">Refuser</button>
+            </div>
+        `;
+        document.body.appendChild(banner);
+    }
+}

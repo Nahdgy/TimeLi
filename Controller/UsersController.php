@@ -238,6 +238,20 @@ class UsersController
             exit;
         }
     }
+
+    private function validateUserData($data) {
+        $errors = [];
+        
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Email invalide";
+        }
+        
+        if (strlen($data['password']) < 8) {
+            $errors[] = "Le mot de passe doit contenir au moins 8 caractères";
+        }
+        
+        return $errors;
+    }
 }
 
 ?>

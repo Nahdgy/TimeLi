@@ -34,4 +34,11 @@ abstract class CoreModel
   {
     return $this->_db;
   }
+
+  protected function sanitizeInput($input) {
+    if (is_array($input)) {
+        return array_map([$this, 'sanitizeInput'], $input);
+    }
+    return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+  }
 }

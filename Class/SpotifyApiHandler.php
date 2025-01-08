@@ -199,4 +199,12 @@ class SpotifyApiHandler {
         
         return json_decode($response, true);
     }
+    
+    private function encryptToken($token) {
+        $key = getenv('ENCRYPTION_KEY');
+        $cipher = "aes-256-gcm";
+        $ivlen = openssl_cipher_iv_length($cipher);
+        $iv = openssl_random_pseudo_bytes($ivlen);
+        return openssl_encrypt($token, $cipher, $key, 0, $iv);
+    }
 }

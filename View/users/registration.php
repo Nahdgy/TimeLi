@@ -30,6 +30,13 @@
                         <label for="confirmPwd">Confirmer le mot de passe</label>
                     </div>
 
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="privacy" required>
+                        <label class="form-check-label" for="privacy">
+                            J'accepte la <a href="privacy-policy.php">politique de confidentialité</a>
+                        </label>
+                    </div>
+
                     <button type="submit" name="submit" class="btn btn-primary w-100 rounded-pill py-2">S'inscrire</button>
                 </form>
 
