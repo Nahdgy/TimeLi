@@ -1,0 +1,150 @@
+/* Styles généraux pour mobile */
+@media screen and (max-width: 768px) {
+    /* Layout général */
+    .container {
+        padding: 10px;
+    }
+
+    /* Navigation */
+    .sidebar {
+        width: 100% !important;
+        min-height: auto !important;
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+    }
+
+    /* Contenu principal */
+    .main-content {
+        margin-top: 80px;
+        padding: 10px !important;
+    }
+
+    /* Cards */
+    .card {
+        margin: 10px 0 !important;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    /* Formulaires */
+    .form-floating {
+        margin-bottom: 15px;
+    }
+
+    /* Boutons */
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-group .btn {
+        width: 100%;
+        margin: 2px 0;
+    }
+
+    /* Modals */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    /* Carousel */
+    .carousel-item {
+        min-height: 100vh;
+    }
+
+    /* Grilles */
+    .row {
+        margin: 0;
+    }
+
+    /* Playlists */
+    .music-card {
+        width: 100% !important;
+        margin: 10px 0;
+    }
+
+    ul.d-flex {
+        justify-content: center !important;
+    }
+
+    /* Préférences */
+    .mood-card {
+        width: calc(50% - 10px) !important;
+        margin: 5px;
+    }
+
+    #map {
+        height: 200px !important;
+    }
+
+    /* Search */
+    #search-form {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #searchResults {
+        width: calc(100% - 20px) !important;
+    }
+
+    /* Audio player */
+    audio {
+        width: 100%;
+    }
+}
+
+/* Ajustements pour très petits écrans */
+@media screen and (max-width: 480px) {
+    /* Textes */
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    /* Layout */
+    .d-flex {
+        flex-direction: column;
+    }
+
+    /* Formulaires */
+    input, select, textarea {
+        font-size: 16px !important; /* Évite le zoom sur iOS */
+    }
+
+    /* Modals */
+    .modal-body {
+        padding: 10px;
+    }
+
+    /* Navigation */
+    .btn-group {
+        width: 100%;
+    }
+
+    /* Cards */
+    .card {
+        width: 100% !important;
+    }
+}
+
+/* Ajustements pour tablettes */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .sidebar {
+        width: 200px !important;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+
+    .card {
+        width: calc(50% - 20px) !important;
+    }
+}

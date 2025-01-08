@@ -38,7 +38,15 @@ class PlaylistsController
     }
     public function newPlaylist()
     {
-        include './View/playlists/preferencies.php';
+        if(isset($_SESSION['timeLi']['user']))
+        {
+            include './View/playlists/preferencies.php';
+        }
+        else
+        {
+            header('Location: index.php');
+            exit;
+        }
     }
     
     public function searchGenres() 
