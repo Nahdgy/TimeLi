@@ -51,9 +51,9 @@
                     <p class="fs-4">Et enfin choisis ton itinéraire ou la durée de ta playlist</p>
                     <a href="index.php?ctrl=Users&action=login&role=user" class="btn btn-primary fs-4">Let's go !</a>
                 </div>
-                <div class="admin-login-container">
-                    <a href="index.php?ctrl=Users&action=login&role=admin" class="btn btn-secondary">Connexion Admin</a>
-                </div>
+                <!-- <div class="admin-login-container">
+                    <a href="index.php?ctrl=Admin&action=login&role=admin" class="btn btn-secondary" disabled="disabled">Connexion Admin</a>
+                </div> -->
             </div>
         </div>
     </div>

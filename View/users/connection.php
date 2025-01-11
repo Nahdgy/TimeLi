@@ -1,4 +1,3 @@
-
 <body class="bg-body-secondary min-vh-100 d-flex align-items-center justify-content-center py-5">
     <div class="container">
         <div class="card shadow-lg mx-auto" style="max-width: 400px;">
@@ -26,48 +25,19 @@
                     <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">Se connecter</button>
                 </form>
 
-                <?php if(isset($_SESSION['timeLi']['user']) && !$_SESSION['timeLi']['user']->getSpotifyUserId()): ?>
-                    <?php
-                    try {
-                        $spotify_config = @require './Config/Spotify.php';
-                        
-                        if ($spotify_config === false || !is_array($spotify_config)) {
-                            throw new Exception('Erreur de chargement de la configuration Spotify');
-                        }
-
-                        if (!isset($spotify_config['client_id']) || !isset($spotify_config['client_secret'])) {
-                            throw new Exception('Configuration Spotify incomplète');
-                        }
-
-                        $scopes = 'user-read-private user-read-email user-library-read playlist-read-private';
-                        $redirect_uri = 'http://localhost/TimeLi.com/index.php?ctrl=Users&action=linkSpotify';
-                        
-                        $params = [
-                            'client_id' => $spotify_config['client_id'],
-                            'response_type' => 'code',
-                            'redirect_uri' => $redirect_uri,
-                            'scope' => $scopes,
-                            'show_dialog' => 'true'
-                        ];
-                        
-                        $auth_url = 'https://accounts.spotify.com/authorize?' . 
-                                    http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-                        ?>
+                <?php if(isset($_SESSION['timeLi']['user']) && !$_SESSION['timeLi']['user']->getSpotifyUserId()&&$_GET['role'] === 'user'): ?>
+                    <?php $spotifyAuthUrl = $this->getSpotifyAuthUrl(); ?>
+                    <?php if($spotifyAuthUrl): ?>
                         <div class="text-center mt-3">
-                            <a href="<?php echo htmlspecialchars($auth_url); ?>" class="btn btn-success">
+                            <a href="<?php echo htmlspecialchars($spotifyAuthUrl); ?>" class="btn btn-success">
                                 <i class="fab fa-spotify me-2"></i>Connecter avec Spotify
                             </a>
                         </div>
-                    <?php 
-                    } catch (Exception $e) {
-                        error_log('Erreur Spotify: ' . $e->getMessage());
-                        ?>
+                    <?php else: ?>
                         <div class="alert alert-danger">
                             Une erreur est survenue lors de la configuration Spotify.
                         </div>
-                    <?php
-                    }
-                    ?>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <?php if(isset($_GET['role']) && $_GET['role'] === 'user') : ?>

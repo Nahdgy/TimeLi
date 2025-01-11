@@ -10,9 +10,6 @@ class MusicClass extends CoreClass
     private $mus_link;
     private $album_id;
     private $artist_id;
-    private $mood_id;
-    private $type_id;
-    private $country_id;
     private $spotify_id;
 
 
@@ -57,20 +54,6 @@ class MusicClass extends CoreClass
         return $this->artist_id;
     }
 
-    public function getMoodId()
-    {
-        return $this->mood_id;
-    }
-
-    public function getTypeId()
-    {
-        return $this->type_id;
-    }
-
-    public function getCountryId()
-    {
-        return $this->country_id;
-    }
 
     public function getSpotifyId()
     {
@@ -116,21 +99,6 @@ class MusicClass extends CoreClass
     public function setArtistId($artist_id)
     {
         $this->artist_id = $artist_id;
-    }
-
-    public function setMoodId($mood_id)
-    {
-        $this->mood_id = $mood_id;
-    }
-
-    public function setTypeId($type_id)
-    {
-        $this->type_id = $type_id;
-    }
-
-    public function setCountryId($country_id)
-    {
-        $this->country_id = $country_id;
     }
 
     public function setSpotifyId($spotify_id)

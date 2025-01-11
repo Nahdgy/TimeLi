@@ -17,21 +17,7 @@ class UsersController
     }
     public function index()
     {
-        $modelUsers = new UsersModel();
-        $datas = $modelUsers->readAll();
-
-        $users = [];
         
-
-        if(count($datas) > 0)
-        {
-            foreach($datas as $data)
-            {
-                $users[] = new Users($data);
-            }
-            
-           return $users;
-        } 
         
         
         if(empty($_GET['action']))
@@ -43,45 +29,35 @@ class UsersController
     }
     public function login()
     {
-        $users = $this->index();
+        
         if(isset($_POST['submit']))
         {
-            
-            $email = $_POST['email'];
-            $pwd = $_POST['pwd'];
-            
-            if($_GET['role'] === 'user')
+
+            $modelUsers = new UsersModel();
+            $data = $modelUsers->findByEmail($_POST['email']);
+
+            if($data)
             {
-                foreach($users as $user)
-                {
-                    if($email === $user->getEmail() && password_verify($pwd, $user->getPwd()))
-                    {
-                        
-                        header('Location: index.php?ctrl=home&action=index&id='.$user->getId());
-                        return $_SESSION['timeLi']['user'] = $user;
-                    }
-                    else
-                    {
-                        header('Location: index.php?ctrl=Users&action=login&login=error');
-                    }
-                }
+                $user = new Users($data);
+
+                $email = $_POST['email'];
+                $pwd = $_POST['pwd'];
                 
-            }
-            else if($_GET['role'] === 'admin')
-            {
-                foreach($users as $user)
+                if($_GET['role'] === 'user')
                 {
-                    if($email == $user->getEmail() && password_verify($pwd, $user->getPwd()))
-                    {
-                        header('Location: index.php?ctrl=admin&action=index&role=admin');
-                        return $_SESSION['jobOffer']['admin'] = $user;
-                    }
-                    else
-                    {
-                        header('Location: index.php?ctrl=Users&action=login&role=admin&login=error');
-                    }
+                        if($email === $user->getEmail() && password_verify($pwd, $user->getPwd()))
+                        {
+                            
+                            header('Location: index.php?ctrl=home&action=index&id='.$user->getId());
+                            return $_SESSION['timeLi']['user'] = $user;
+                        }
+                        else
+                        {
+                            header('Location: index.php?ctrl=Users&action=login&role=user&login=error');
+                        }
                 }
             }
+            
                 
         }
         include './View/users/connection.php';
@@ -89,7 +65,8 @@ class UsersController
     }
     public function register()
     {
-        if(isset($_POST['submit']))
+        $modelUsers = new UsersModel();
+        if(isset($_POST['submit'])&& $modelUsers->verifyIfEmailExists($_POST['email']) === false)
         {
             $pwd = $_POST['pwd'];
             $confirmPwd = $_POST['confirmPwd'];
@@ -251,6 +228,31 @@ class UsersController
         }
         
         return $errors;
+    }
+
+    public function getSpotifyAuthUrl() {
+        try {
+            $spotify_config = require './Config/Spotify.php';
+            $scopes = 'user-read-private user-read-email user-library-read playlist-read-private';
+            
+            // Récupérer l'URL ngrok
+            $ngrokConfig = new NgrokConfig();
+            $ngrokUrl = $ngrokConfig->getCurrentUrl();
+            $redirect_uri = $ngrokUrl . '/TimeLi/index.php?ctrl=Users&action=linkSpotify';
+            
+            $params = [
+                'client_id' => $spotify_config['client_id'],
+                'response_type' => 'code',
+                'redirect_uri' => $redirect_uri,
+                'scope' => $scopes,
+                'show_dialog' => 'true'
+            ];
+            
+            return 'https://accounts.spotify.com/authorize?' . http_build_query($params);
+        } catch (Exception $e) {
+            error_log('Erreur génération URL Spotify: ' . $e->getMessage());
+            return false;
+        }
     }
 }
 

@@ -32,24 +32,9 @@ class MusicModel extends CoreModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    //Filtres
-    public function musicByMood($mood_id)
-    {
-        $sql = "SELECT * FROM music JOIN mood USING (mood_id) WHERE mood_id = :mood_id";
-    }
-
-    public function musicByType($type_id)
-    {
-        $sql = "SELECT * FROM music JOIN type USING (typ_id) WHERE typ_id = :type_id";
-    }
-
-    public function musicByCountry($country_id)
-    {
-        $sql = "SELECT * FROM music JOIN country USING (cou_id) WHERE cou_id = :country_id";
-    }
     public function create($data)
     {
-        $sql = "INSERT INTO music (mus_title, mus_release, mus_duration, mus_rating, mus_link, alb_id, aut_id, moo_id, typ_id, cou_id, spotify_id) VALUES (:title, :release, :duration, :rating, :link, :album_id, :artist_id, :mood_id, :type_id, :country_id, :spotify_id)";
+        $sql = "INSERT INTO music (mus_title, mus_release, mus_duration, mus_rating, mus_link, alb_id, aut_id, spotify_id) VALUES (:title, :release, :duration, :rating, :link, :album_id, :artist_id, :spotify_id)";
         $stmt = $this->getDb()->prepare($sql);
         return $stmt->execute($data);
     }

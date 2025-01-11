@@ -13,11 +13,9 @@ class Playlist extends CoreClass
     private $mus_id;
     private $mus_title;
     private $mus_duration;
-    private $jou_id;
-    private $jou_duration;
-    private $dur_id;
-    private $dur_rangstart;
-    private $dur_rangend;
+    private $mood_id;
+    private $genre_id;
+    private $country_id;
 
     public function getId()
     {
@@ -74,29 +72,19 @@ class Playlist extends CoreClass
         return $this->mus_duration;
     }
 
-    public function getJouId()
+    public function getMoodId()
     {
-        return $this->jou_id;
+        return $this->mood_id;
     }
 
-    public function getJouDuration()
+    public function getGenreId()
     {
-        return $this->jou_duration;
+        return $this->genre_id;
     }
 
-    public function getDurId()
+    public function getCountryId()
     {
-        return $this->dur_id;
-    }
-
-    public function getDurRangstart()
-    {
-        return $this->dur_rangstart;
-    }
-
-    public function getDurRangend()
-    {
-        return $this->dur_rangend;
+        return $this->country_id;
     }
 
     public function setId($play_id)
@@ -154,29 +142,19 @@ class Playlist extends CoreClass
         $this->mus_duration = $mus_duration;
     }
 
-    public function setJouId($jou_id)
+    public function setMoodId($mood_id)
     {
-        $this->jou_id = $jou_id;
+        $this->mood_id = $mood_id;
     }
 
-    public function setJouDuration($jou_duration)
+    public function setGenreId($genre_id)
     {
-        $this->jou_duration = $jou_duration;
+        $this->genre_id = $genre_id;
     }
 
-    public function setDurId($dur_id)
+    public function setCountryId($country_id)
     {
-        $this->dur_id = $dur_id;
-    }
-
-    public function setDurRangstart($dur_rangstart)
-    {
-        $this->dur_rangstart = $dur_rangstart;
-    }
-
-    public function setDurRangend($dur_rangend)
-    {
-        $this->dur_rangend = $dur_rangend;
+        $this->country_id = $country_id;
     }
 
 }

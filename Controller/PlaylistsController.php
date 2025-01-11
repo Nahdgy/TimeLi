@@ -40,7 +40,7 @@ class PlaylistsController
     {
         if(isset($_SESSION['timeLi']['user']))
         {
-            include './View/playlists/preferencies.php';
+            include './View/playlists/preferencies.php'; #Plutot addPlaylist clarigier le nom
         }
         else
         {
@@ -68,8 +68,8 @@ class PlaylistsController
         // Transformer les résultats pour correspondre au format attendu par le JS
         $formattedGenres = array_map(function($genre) {
             return [
-                'id' => $genre['typ_id'],
-                'name' => $genre['typ_label']
+                'id' => $genre['gen_id'],
+                'name' => $genre['gen_label']
             ];
         }, $genres);
         

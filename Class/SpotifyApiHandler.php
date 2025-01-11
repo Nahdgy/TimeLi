@@ -26,7 +26,7 @@ class SpotifyApiHandler {
             $data = [
                 'grant_type' => 'authorization_code',
                 'code' => $code,
-                'redirect_uri' => 'https://2abb-2001-861-5d90-f9f0-8884-f6d8-a0f4-25e3.ngrok-free.app/TimeLi/index.php?ctrl=Users&action=linkSpotify'
+                'redirect_uri' => 'https://1c48-176-142-243-172.ngrok-free.app/TimeLi/index.php?ctrl=Users&action=linkSpotify'
             ];
         } else {
             // Sinon, on demande un token d'accès client 
