@@ -15,9 +15,9 @@
                             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#userModal<?= $user->getId() ?>">
                                 <i class="fas fa-eye"></i> Voir
                             </button>
-                            <a href="?ctrl=admin&action=edit&id=<?= $user->getId() ?>" class="btn btn-warning">
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal<?= $user->getId() ?>">
                                 <i class="fas fa-edit"></i> Modifier
-                            </a>
+                            </button>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $user->getId() ?>">
                                 <i class="fas fa-trash"></i> Supprimer
                             </button>
@@ -68,6 +68,39 @@
                 </div>
             <?php endforeach; ?>
         </div>
+        <!-- Modal pour modifier un utilisateur -->
+        <?php foreach($users as $user): ?>
+            <div class="modal fade" id="editModal<?= $user->getId() ?>" tabindex="-1" aria-labelledby="editModalLabel<?= $user->getId() ?>" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel<?= $user->getId() ?>">Modifier l'utilisateur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <form action="?ctrl=admin&action=edit&id=<?= $user->getId() ?>" method="POST">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="firstname<?= $user->getId() ?>" class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" id="firstname<?= $user->getId() ?>" name="firstname" value="<?= $user->getFirstname() ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lastname<?= $user->getId() ?>" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="lastname<?= $user->getId() ?>" name="lastname" value="<?= $user->getLastname() ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email<?= $user->getId() ?>" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email<?= $user->getId() ?>" name="email" value="<?= $user->getEmail() ?>" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                <button type="submit" name="submit" class="btn btn-warning">Modifier</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
 
         <!-- Modal pour confirmation de la suppression d'un utilisateur -->
         <?php foreach($users as $user): ?>

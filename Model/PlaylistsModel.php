@@ -239,6 +239,19 @@ class PlaylistsModel extends CoreModel
         $stmt = $this->getDb()->prepare($sql);
         return $stmt->execute([':playlist_id' => $playlist_id]);
     }
+    #Méthode pour la mise à jour du nom de la playlist
+    public function updateTitle($id, $title)
+    {
+        $sql = "UPDATE playlist SET play_title = :title WHERE play_id = :id";
+        if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+        {
+            if($this->_req->execute([':title' => $title, ':id' => $id]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     #Méthodes de récupération des playlists d'un utilisateur
     public function readPlaylists($id)
     {

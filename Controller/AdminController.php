@@ -56,7 +56,7 @@ class AdminController
         {
             foreach($datasMoods as $data)
             {
-                $moods[] = new Playlist($data);
+                $moods[] = new Mood($data);
             }
         }
         include './View/admin/moodList.php';
@@ -71,7 +71,7 @@ class AdminController
         {
             foreach($datasGenres as $data)
             {
-                $genres[] = new Playlist($data);
+                $genres[] = new Genre($data);
             }
         }
         include './View/admin/genreList.php';
@@ -86,10 +86,9 @@ class AdminController
         {
             foreach($datasCountries as $data)
             {
-                $countries[] = new Playlist($data);
+                $countries[] = new Country($data);
             }
         }
-        return $countries;
 
         include './View/admin/countryList.php';
     }
@@ -168,7 +167,6 @@ class AdminController
         if($data)
         {
             $user = new Users($data);
-            include './View/admin/edit.php';
         }
         else
         {
