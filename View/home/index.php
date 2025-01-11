@@ -1,12 +1,12 @@
 <div class="d-flex">
-    <!-- Barre latérale -->
-    <div class="sidebar bg-dark text-white" style="width: 250px; min-height: 100vh;">
-        <h1 class="p-3">TimeLi</h1>
-        <!-- Vous pouvez ajouter ici d'autres éléments de navigation -->
-         <form id="search-form" class="position-relative">
-            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une musique">
-            <div id="searchResults" class="position-absolute w-100 bg-dark" style="z-index: 1000; display: none;"></div>
-         </form>
+    <!-- Barre d'en-tête -->
+    <div class="header bg-dark text-white w-100 d-flex justify-content-between align-items-center h-100 px-4">
+        <h1>TimeLi</h1>
+        <form id="search-form" class="position-relative w-25">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une musique">
+                <div id="searchResults" class="position-absolute w-100 bg-dark" style="z-index: 1000; display: none;"></div>
+            </form>
+        </div>
     </div>
 
     <!-- Contenu principal -->
