@@ -38,4 +38,23 @@ class MusicModel extends CoreModel
         $stmt = $this->getDb()->prepare($sql);
         return $stmt->execute($data);
     }
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM playlist WHERE play_id = :id";
+        try
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':id' => $id]))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }
 }

@@ -161,18 +161,7 @@ class AdminController
 
     public function edit()
     {
-        $modelUsers = new UsersModel();
-        $data = $modelUsers->readOne($_GET['id']);
-
-        if($data)
-        {
-            $user = new Users($data);
-        }
-        else
-        {
-            header('Location: index.php?ctrl=admin&action=usersList');
-        }
-
+        
         if(isset($_POST['submit']))
         {
             $modelUsers = new UsersModel();
@@ -184,11 +173,108 @@ class AdminController
         }
     }
 
+    public function editMood()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelPlaylists = new PlaylistsModel();
+            $data = $modelPlaylists->updateMood($_GET['id'], $_POST['name']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=moodList');
+            }
+        }
+    }   
+
+    public function editGenre()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelPlaylists = new PlaylistsModel();
+            $data = $modelPlaylists->updateGenre($_GET['id'], $_POST['name']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=genreList');
+            }
+        }
+    }
+
+    public function editCountry()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelPlaylists = new PlaylistsModel();
+            $data = $modelPlaylists->updateCountry($_GET['id'], $_POST['name'], $_POST['code']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=countryList');
+            }
+        }
+    }
+
     public function delete()
     {
-        $modelUsers = new UsersModel();
-        $modelUsers->delete($_GET['id']);
-        header('Location: index.php?ctrl=admin&action=index');
+        if(isset($_POST['submit']))
+        {
+            $modelUsers = new UsersModel();
+            $data = $modelUsers->delete($_GET['id']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=index');
+            }
+        }
+    }
+
+    public function deleteMood()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelPlaylists = new PlaylistsModel();
+            $data = $modelPlaylists->deleteMood($_GET['id']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=moodList');
+            }
+        }
+    }
+
+    public function deleteGenre()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelPlaylists = new PlaylistsModel();
+            $data = $modelPlaylists->deleteGenre($_GET['id']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=genreList');
+            }
+        }
+    }
+
+    public function deleteCountry()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelPlaylists = new PlaylistsModel();
+            $data = $modelPlaylists->deleteCountry($_GET['id']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=countryList');
+            }
+        }
+    }
+
+    public function deleteMusic()
+    {
+        if(isset($_POST['submit']))
+        {
+            $modelMusic = new MusicModel();
+            $data = $modelMusic->delete($_GET['id']);
+            if($data)
+            {
+                header('Location: index.php?ctrl=admin&action=musicList');
+            }
+        }
     }
 }
 

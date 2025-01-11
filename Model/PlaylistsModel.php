@@ -116,6 +116,43 @@ class PlaylistsModel extends CoreModel
         }
     }
 
+    public function updateMood($id, $label)
+    {
+        $sql = "UPDATE mood SET moo_label = :label WHERE moo_id = :id";
+        try
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':label' => $label, ':id' => $id]))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }
+    public function deleteMood($id)
+    {
+        $sql = "DELETE FROM mood WHERE moo_id = :id";
+        try
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':id' => $id]))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
     public function readAllGenres()
     {
         $sql = "SELECT gen_id AS Id, gen_label AS Label FROM genre";
@@ -132,6 +169,44 @@ class PlaylistsModel extends CoreModel
         }
     }
 
+    public function updateGenre($id, $label)
+    {
+        $sql = "UPDATE genre SET gen_label = :label WHERE gen_id = :id";
+        try 
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':label' => $label, ':id' => $id]))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }   
+
+    public function deleteGenre($id)
+    {
+        $sql = "DELETE FROM genre WHERE gen_id = :id";
+        try 
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':id' => $id]))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
     public function readAllCountries()
     {
         $sql = "SELECT cou_id AS Id, cou_label AS Label FROM country";
@@ -140,6 +215,44 @@ class PlaylistsModel extends CoreModel
             if(($this->_req = $this->getDb()->query($sql)) !== false)
             {
                 return $this->_req->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public function updateCountry($id, $label, $code)
+    {
+        $sql = "UPDATE country SET cou_label = :label, cou_code = :code WHERE cou_id = :id";
+        try
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':label' => $label, ':code' => $code, ':id' => $id]))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(PDOException $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public function deleteCountry($id)
+    {
+        $sql = "DELETE FROM country WHERE cou_id = :id";
+        try
+        {
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([':id' => $id]))
+                {
+                    return true;
+                }
             }
         }
         catch(PDOException $e)
@@ -202,16 +315,8 @@ class PlaylistsModel extends CoreModel
         ]);
     }
 
-    public function deleteAll($id)
-    {
 
-    }
-
-    public function deleteOne($id)
-    {
-
-    }
-
+    #Méthode de suppression d'une musique d'une playlist
     public function removeMusic($data)
     {
         $sql = "DELETE FROM playlist_music 
