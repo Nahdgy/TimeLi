@@ -2,7 +2,7 @@
     <h1>Time Li</h1>
     <h3>Utilisateurs</h3>
     <a href="?ctrl=admin&action=index&role=admin" class="btn btn-success">
-        <i class="fas fa-plus"></i> Retour à l'accueil
+        <i class="fas fa-arrow-left"></i> Retour à l'accueil
     </a>
         <!-- Afficher les utilisateurs -->
         <div>

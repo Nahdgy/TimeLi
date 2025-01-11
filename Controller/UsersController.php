@@ -18,50 +18,51 @@ class UsersController
     public function index()
     {
         
-        
-        
         if(empty($_GET['action']))
         {
             include './View/users/index.php';
         }
         
-        
     }
     public function login()
     {
-        
         if(isset($_POST['submit']))
         {
-
             $modelUsers = new UsersModel();
-            $data = $modelUsers->findByEmail($_POST['email']);
-
+            $data = $modelUsers->findByEmail($_POST['email']); 
+            
             if($data)
-            {
+            { 
+                
                 $user = new Users($data);
 
                 $email = $_POST['email'];
                 $pwd = $_POST['pwd'];
+
                 
+
                 if($_GET['role'] === 'user')
                 {
-                        if($email === $user->getEmail() && password_verify($pwd, $user->getPwd()))
-                        {
-                            
-                            header('Location: index.php?ctrl=home&action=index&id='.$user->getId());
-                            return $_SESSION['timeLi']['user'] = $user;
-                        }
-                        else
-                        {
-                            header('Location: index.php?ctrl=Users&action=login&role=user&login=error');
-                        }
-                }
-            }
+                   
+                    if($email === $user->getEmail() && password_verify($pwd, $user->getPwd()))
+                    {
+                        echo 'connecté';
+                        header('Location: index.php?ctrl=home&action=index&role=user');
+                        return $_SESSION['timeLi']['user'] = $user;
+                    }
+                    else
+                    {
+                        header('Location: index.php?ctrl=Users&action=login&role=admin&login=error');
+                    }
             
-                
+                } 
+            }
+            else if ($data === false)
+            {
+                header('Location: index.php?ctrl=Users&action=login&role=admin&login=error');
+            }
         }
         include './View/users/connection.php';
-        
     }
     public function register()
     {

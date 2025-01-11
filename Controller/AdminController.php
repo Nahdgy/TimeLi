@@ -4,7 +4,7 @@ class AdminController
 {
     public function index()
     {
-       if($_GET['role'] === 'admin')
+       if($_GET['role'] === 'admin' && isset($_SESSION['timeLi']['admin']))
        {
         include './View/admin/index.php';
        }

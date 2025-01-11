@@ -14,6 +14,9 @@
         <a href="?ctrl=admin&action=countryList&role=admin" class="btn btn-light btn-lg fs-4 px-5 py-3 hover-purple">
             Pays
         </a>
+        <a href="?ctrl=admin&action=musicList&role=admin" class="btn btn-light btn-lg fs-4 px-5 py-3 hover-purple">
+            Musiques
+        </a>
     </div>
 </div>
 </div>
