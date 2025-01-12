@@ -36,18 +36,6 @@ class PlaylistsController
 
         include './View/playlists/show.php';
     }
-    public function newPlaylist()
-    {
-        if(isset($_SESSION['timeLi']['user']))
-        {
-            include './View/playlists/preferencies.php'; #Plutot addPlaylist clarigier le nom
-        }
-        else
-        {
-            header('Location: index.php');
-            exit;
-        }
-    }
     
     public function searchGenres() 
     {
@@ -80,52 +68,102 @@ class PlaylistsController
 
     public function createPlaylist()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupération des données du formulaire
-            $genres = !empty($_POST['genres']) ? explode(',', $_POST['genres']) : [];
-            
-            $playlistData = [
-                'mood' => $_POST['mood'] ?? null,
-                'genres' => $genres, // Maintenant c'est un tableau
-                'country' => $_POST['country'] ?? null,
-                'travel_time' => $_POST['travel_time'] ?? null,
-                'use_id' => $_SESSION['timeLi']['user']->getId()
-            ];
+        if(isset($_SESSION['timeLi']['user']))
+        {
+            if(isset($_POST['submit']))
+            {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+                {
 
-            try {
-                // Création de la playlist dans la BDD
-                $modelPlaylist = new PlaylistsModel();
-                $playlist_id = $modelPlaylist->create($playlistData);
-
-                if ($playlist_id) {
-                    // Récupération des musiques via Spotify
-                    $spotify_config = require './Config/Spotify.php';
-                    $spotifyHandler = new SpotifyApiHandler(
-                        $spotify_config['client_id'],
-                        $spotify_config['client_secret']
-                    );
-
-                    // Construction de la requête Spotify
-                    $query = $this->buildSpotifyQuery($playlistData);
+                    try 
+                    {
+                        // Récupération des données du formulaire
+                        $genres = !empty($_POST['genres']) ? explode(',', $_POST['genres']) : [];
                     
-                    // Récupération des musiques
-                    $tracks = $spotifyHandler->searchTracks($query, $_SESSION['timeLi']['user']->getSpotifyAccessToken());
-                    
-                    // Ajout des musiques à la playlist
-                    $this->addTracksToPlaylist($playlist_id, $tracks['tracks']['items']);
+                        $playlistData = [
+                            'title' => htmlspecialchars($_POST['title']),
+                            'duration' => intval($_POST['travel_time']),
+                            'visibility' => 'private',
+                            'use_id' => $_SESSION['timeLi']['user']->getId(),
+                            'moo_id' => $this->getMoodId($_POST['mood']),
+                            'gen_id' => $genres[0] ?? null,
+                            'cou_id' => $this->getCountryId($_POST['country'])
+                        ];
 
-                    header('Location: index.php?ctrl=Playlists&action=show&id=' . $playlist_id);
-                    exit;
+                        error_log('PlaylistData: ' . print_r($playlistData, true));
+
+                    
+                        // Création de la playlist dans la BDD
+                        $modelPlaylist = new PlaylistsModel();
+                        $playlist_id = $modelPlaylist->create($playlistData);
+
+                        if ($playlist_id) {
+                            // Récupération des musiques via Spotify
+                            $spotify_config = require './Config/Spotify.php';
+                            $spotifyHandler = new SpotifyApiHandler(
+                                $spotify_config['client_id'],
+                                $spotify_config['client_secret']
+                            );
+
+                            // Construction de la requête Spotify
+                            $query = $this->buildSpotifyQuery($playlistData);
+                            
+                            // Récupération des musiques
+                            $tracks = $spotifyHandler->searchTracks($query, $_SESSION['timeLi']['user']->getSpotifyAccessToken());
+                            
+                            // Ajout des musiques à la playlist
+                            $this->addTracksToPlaylist($playlist_id, $tracks['tracks']['items']);
+
+                            header('Location: index.php?ctrl=Playlists&action=show&id=' . $playlist_id);
+                            exit;
+                        }
+                    } 
+                    catch (Exception $e) 
+                    {
+                        // Gérer l'erreur
+                        error_log('Erreur lors de la création de la playlist: ' . $e->getMessage());
+                        $_SESSION['error'] = $e->getMessage();
+                        header('Location: index.php?ctrl=Playlists&action=createPlaylist');
+                        exit;
+                    }
                 }
-            } catch (Exception $e) {
-                // Gérer l'erreur
-                $_SESSION['error'] = $e->getMessage();
-                header('Location: index.php?ctrl=Playlists&action=newPlaylist');
-                exit;
             }
         }
+        else
+        {
+            $_SESSION['error'] = "Vous devez vous connecter pour créer une playlist";
+            header('Location: index.php?ctrl=Users&action=login&role=user&login=error');
+        }
+        include './View/playlists/addPlaylist.php';
     }
 
+#Méthodes de conversion des données poussées par l'utilisateur en requête SQL
+    private function getMoodId($mood) 
+    {
+        $moodMap = [
+            'sad' => 1,
+            'happy' => 2,
+            'lover' => 3,
+            'angry' => 4,
+            'chill' => 5,
+            'party' => 6,
+            'none' => 7,
+
+        ];
+        return $moodMap[$mood] ?? 7; // Retourne 1 par défaut si l'humeur n'est pas trouvée
+    }
+    private function getCountryId($countryCode)
+    {
+        $modelPlaylist = new PlaylistsModel();
+        $countries = $modelPlaylist->readAllCountries();
+        foreach ($countries as $country) {
+                if ($country['code'] === $countryCode) {
+                    return $country['Id'];
+                }
+            }
+            return 1;
+    }
+#Méthode de conversion des données poussées par l'utilisateur en requête Spotify
     private function buildSpotifyQuery($playlistData)
     {
         $query = [];
@@ -161,14 +199,29 @@ class PlaylistsController
     {
         $modelPlaylist = new PlaylistsModel();
         $musicModel = new MusicModel();
+        
+        // Récupérer le temps de trajet en minutes depuis la playlist
+        $playlistData = $modelPlaylist->readOne($playlist_id)[0];
+        $marginInMs = 5 * 60 * 1000;
+        $targetDuration = ($playlistData['travel_time'] * 60 * 1000) + $marginInMs;
+        $currentDuration = 0;
 
         foreach ($tracks as $track) {
+            // Vérifier si l'ajout de cette musique dépasserait le temps de trajet + marge (5 minutes)
+            if ($currentDuration + $track['duration_ms'] > $targetDuration) {
+                break;
+            }
+
             // Création de la musique dans la BDD si elle n'existe pas
             $musicData = [
                 'title' => $track['name'],
+                'release' => $track['album']['release_date'],
                 'duration' => $track['duration_ms'],
-                'spotify_id' => $track['id'],
-                // Ajoutez d'autres champs nécessaires
+                'rating' => $track['popularity'],
+                'link' => $track['external_urls']['spotify'],
+                'album_id' => $track['album']['id'],
+                'artist_id' => $track['artists'][0]['id'],
+                'spotify_id' => $track['id']
             ];
 
             $music_id = $musicModel->create($musicData);
@@ -178,7 +231,13 @@ class PlaylistsController
                 'playlist_id' => $playlist_id,
                 'music_id' => $music_id
             ]);
+
+            // Mettre à jour la durée totale
+            $currentDuration += $track['duration_ms'];
         }
+
+        // Mettre à jour la durée totale de la playlist
+        $modelPlaylist->updateDuration($playlist_id);
     }
 
     public function removeMusic()

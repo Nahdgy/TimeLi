@@ -16,6 +16,7 @@
 
     <!-- Contenu principal -->
     <div class="main-content flex-grow-1 bg-secondary bg-opacity-25 p-4">
+        <?php debug($_SESSION); ?>
         <h2 class="text-white">Bienvenue <?= $_SESSION['timeLi']['user']->getFirstname()?></h2>
         <h3 class="text-white">Dernières playlists</h3>
         
@@ -40,7 +41,7 @@
                 <?php endif; ?>
             </ul>
             <div class="text-center">
-                <a href="?ctrl=playlists&action=newPlaylist" class="btn btn-primary rounded-circle">+</a>
+                <a href="?ctrl=playlists&action=createPlaylist" class="btn btn-primary rounded-circle">+</a>
             </div>
         </div>
     </div>

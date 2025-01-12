@@ -33,22 +33,23 @@ class UsersController
             
             if($data)
             { 
-                
                 $user = new Users($data);
-
                 $email = $_POST['email'];
                 $pwd = $_POST['pwd'];
 
-                
-
                 if($_GET['role'] === 'user')
                 {
-                   
                     if($email === $user->getEmail() && password_verify($pwd, $user->getPwd()))
                     {
-                        echo 'connecté';
+                        if (!empty($data['spotify_user_id'])) {
+                            $user->setSpotifyUserId($data['spotify_user_id']);
+                            $user->setSpotifyAccessToken($data['spotify_access_token']);
+                            $user->setSpotifyRefreshToken($data['spotify_refresh_token']);
+                        }
+                        
+                        $_SESSION['timeLi']['user'] = $user;
                         header('Location: index.php?ctrl=home&action=index&role=user');
-                        return $_SESSION['timeLi']['user'] = $user;
+                        exit;
                     }
                     else
                     {
@@ -131,63 +132,25 @@ class UsersController
     }
     public function linkSpotify()
     {
+        // Vérifier que l'utilisateur est connecté avant tout
         if (!isset($_SESSION['timeLi']['user'])) {
-            header('Location: index.php?ctrl=Users&action=login&role=user');
+            header('Location: index.php?ctrl=users&action=login&role=user');
             exit;
         }
 
         try {
             $spotify_config = require './Config/Spotify.php';
             
-            // Vérifier que les configurations sont présentes
-            if (empty($spotify_config['client_id']) || empty($spotify_config['client_secret'])) {
-                throw new Exception('Configuration Spotify manquante');
-            }
-
-            // Si nous n'avons pas encore de code d'autorisation
+            // Si pas de code, rediriger vers l'auth Spotify
             if (!isset($_GET['code'])) {
-                $scopes = 'user-read-private user-read-email user-library-read playlist-read-private';
-                
-                // Récupérer l'URL ngrok depuis le fichier de configuration
-                $ngrokConfig = new NgrokConfig();
-                $ngrokUrl = $ngrokConfig->getCurrentUrl();
-                if (!$ngrokUrl) {
-                    throw new Exception('URL ngrok non configurée');
-                }
-                
-                $redirect_uri = $ngrokUrl . '/TimeLi/index.php?ctrl=Users&action=linkSpotify';
-                
-                // Construction de l'URL avec tous les paramètres requis
-                $params = [
-                    'client_id' => $spotify_config['client_id'],
-                    'response_type' => 'code',
-                    'redirect_uri' => $redirect_uri,
-                    'scope' => $scopes,
-                    'show_dialog' => 'true'
-                ];
-                
-                $auth_url = 'https://accounts.spotify.com/authorize?' . http_build_query($params);
-                
+                $auth_url = $this->getSpotifyAuthUrl();
                 header('Location: ' . $auth_url);
                 exit;
             }
 
-            // Le reste du code pour gérer le retour de Spotify...
-            $spotifyHandler = new SpotifyApiHandler($spotify_config['client_id'], $spotify_config['client_secret']);
-            
-            // Échange du code contre des tokens
+            // Traitement du retour de Spotify
             $tokens = $this->spotifyApiHandler->getAccessToken($_GET['code']);
-            
-            if (!$tokens) {
-                throw new Exception('Échec de la récupération des tokens');
-            }
-            
-            // Récupération des informations de l'utilisateur Spotify
             $spotify_user = $this->spotifyApiHandler->getCurrentUser($tokens['access_token']);
-            
-            if (!$spotify_user) {
-                throw new Exception('Échec de la récupération du profil utilisateur');
-            }
             
             // Mise à jour de la base de données
             $model = new UsersModel();
@@ -202,10 +165,16 @@ class UsersController
                 throw new Exception('Échec de la mise à jour des informations Spotify');
             }
             
-            // Mise à jour de la session
+            // Mise à jour de l'objet utilisateur en session
             $_SESSION['timeLi']['user']->setSpotifyUserId($spotify_user['id']);
             $_SESSION['timeLi']['user']->setSpotifyAccessToken($tokens['access_token']);
             $_SESSION['timeLi']['user']->setSpotifyRefreshToken($tokens['refresh_token']);
+            
+            // Après la mise à jour dans la base de données
+            $model = new UsersModel();
+            $userData = $model->readOne($_SESSION['timeLi']['user']->getId());
+            $user = new Users($userData);
+            $_SESSION['timeLi']['user'] = $user;
             
             header('Location: index.php?ctrl=home&action=index&spotify=success');
             exit;
@@ -239,12 +208,12 @@ class UsersController
             // Récupérer l'URL ngrok
             $ngrokConfig = new NgrokConfig();
             $ngrokUrl = $ngrokConfig->getCurrentUrl();
-            $redirect_uri = $ngrokUrl . '/TimeLi/index.php?ctrl=Users&action=linkSpotify';
+            
             
             $params = [
                 'client_id' => $spotify_config['client_id'],
                 'response_type' => 'code',
-                'redirect_uri' => $redirect_uri,
+                'redirect_uri' => $ngrokUrl.'/TimeLi/index.php?ctrl=Users&action=linkSpotify',
                 'scope' => $scopes,
                 'show_dialog' => 'true'
             ];

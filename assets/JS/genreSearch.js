@@ -1,16 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('genreSearch');
-    const searchResults = document.getElementById('genreResults');
-    const selectedGenresContainer = document.getElementById('selectedGenres');
-    const genreCountElement = document.getElementById('genreCount');
-    let selectedGenres = new Set(); // Pour stocker les IDs des genres sélectionnés
-    
-    if (!searchInput || !searchResults || !selectedGenresContainer) {
-        console.error('Elements non trouvés');
-        return;
+    // Vérification initiale de la présence des éléments nécessaires
+    const searchInput = document.querySelector('#genreSearch');
+    const searchResults = document.querySelector('#genreResults');
+    const selectedGenresContainer = document.querySelector('#selectedGenres');
+    const genreCountElement = document.querySelector('#genreCount');
+
+    // Si on n'est pas sur une page qui nécessite la recherche de genres, on sort
+    if (!searchInput) {
+        return; // Sortie silencieuse si l'élément de recherche n'existe pas
     }
 
+    // Initialisation du Set pour les genres sélectionnés
+    let selectedGenres = new Set();
     let timeoutId;
+
+    // Vérification des éléments requis
+    if (!searchResults || !selectedGenresContainer || !genreCountElement) {
+        console.warn('Certains éléments de recherche de genres sont manquants');
+        return;
+    }
 
     searchInput.addEventListener('input', function() {
         clearTimeout(timeoutId);
@@ -55,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         selectedGenresContainer.appendChild(tag);
         updateGenreCount();
-        updateSelectedGenresInput(Array.from(selectedGenres));
+        updateSelectedGenresInput();
     }
 
     // Fonction globale pour supprimer un genre
@@ -69,12 +77,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         updateGenreCount();
-        updateSelectedGenresInput(Array.from(selectedGenres));
+        updateSelectedGenresInput();
     };
 
-    // Cacher les résultats quand on clique ailleurs
+    // Gestion des clics en dehors de la zone de recherche
     document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        if (searchResults && !searchInput.contains(e.target) && !searchResults.contains(e.target)) {
             searchResults.style.display = 'none';
         }
     });
@@ -87,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const genreId = resultElement.dataset.id;
         const genreName = resultElement.dataset.name;
 
-        // Vérifier si le genre n'est pas déjà sélectionné
         if (!selectedGenres.has(genreId)) {
             // Vérifier si on n'a pas déjà 10 genres
             if (selectedGenres.size >= 10) {
@@ -110,8 +117,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour mettre à jour le champ caché des genres
-    function updateSelectedGenresInput(genres) {
-        const genresString = Array.from(selectedGenres).join(',');
-        document.getElementById('selectedGenresInput').value = genresString;
+    function updateSelectedGenresInput() {
+        const selectedGenresInput = document.querySelector('#selectedGenresInput');
+        if (selectedGenresInput) {
+            selectedGenresInput.value = Array.from(selectedGenres).join(',');
+        }
     }
 });

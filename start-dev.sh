@@ -16,20 +16,27 @@ if ! curl -s http://127.0.0.1:4040/api/tunnels > /dev/null; then
     exit 1
 fi
 
-# Récupérer l'URL complète de ngrok
+# Récupérer l'URL complète de ngrok et la formater correctement
 NGROK_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | grep -o '"public_url":"[^"]*' | cut -d'"' -f4)
+REDIRECT_URI="${NGROK_URL}/TimeLi/index.php?ctrl=Users&action=linkSpotify"
 
-if [ -z "$NGROK_URL" ]; then
-    echo "Erreur : Impossible de récupérer l'URL ngrok"
-    exit 1
-fi
+# Mettre à jour la configuration ngrok
+echo "{\"url\": \"$NGROK_URL\"}" > Config/ngrok-url.json
 
-# Mettre à jour la configuration avec le bon chemin
-php Functions/update-ngrok.php
+# Mettre à jour la configuration Spotify
+cat > Config/Spotify.php << EOF
+<?php
+return [
+    'client_id' => '763d23d8e7f4422f9ff98dbab39c07f1',
+    'client_secret' => 'df419bfa1f7f43edb49f55d1e0260a92',
+    'redirect_uri' => '$REDIRECT_URI',
+    'scopes' => 'user-read-private user-read-email playlist-modify-public playlist-modify-private'
+];
+EOF
 
 # Afficher les instructions avec l'URL complète
 echo "==================================="
-echo "URL à copier dans votre dashboard Spotify :"
-echo "${NGROK_URL}/TimeLi/index.php?ctrl=Users&action=linkSpotify"
+echo "URL de redirection Spotify à configurer :"
+echo "$REDIRECT_URI"
 echo "==================================="
  

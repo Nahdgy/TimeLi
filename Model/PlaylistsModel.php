@@ -209,7 +209,7 @@ class PlaylistsModel extends CoreModel
 
     public function readAllCountries()
     {
-        $sql = "SELECT cou_id AS Id, cou_label AS Label FROM country";
+        $sql = "SELECT cou_id AS Id, cou_code AS Code, cou_label AS Label FROM country";
         try
         {
             if(($this->_req = $this->getDb()->query($sql)) !== false)
@@ -279,31 +279,36 @@ class PlaylistsModel extends CoreModel
 
     public function create($data)
     {
+        error_log('Données reçues dans create: ' . print_r($data, true));
         try 
         {
             $sql = "INSERT INTO playlist (play_title, play_duration, play_creation, play_visibility, use_id, moo_id, gen_id, cou_id) 
                     VALUES (:title, :duration, NOW(), :visibility, :use_id, :moo_id, :gen_id, :cou_id)";
             
-            $duration = $data['travel_time'];
+         
             
-            $stmt = $this->getDb()->prepare($sql);
-            $stmt->execute([
-                ':title' => "Playlist " . date('Y-m-d H:i:s'),
-                ':duration' => $duration,
-                ':visibility' => 'private',
-                ':use_id' => $data['use_id'],
-                ':moo_id' => $data['moo_id'],
-                ':gen_id' => $data['gen_id'],
-                ':cou_id' => $data['cou_id']
-            ]);
-
-            return $this->getDb()->lastInsertId();
+            if(($this->_req = $this->getDb()->prepare($sql)) !== false)
+            {
+                if($this->_req->execute([
+                    ':title' => $data['title'] . date('Y-m-d H:i:s'),
+                    ':duration' => $data['duration'],
+                    ':visibility' => $data['visibility'],
+                    ':use_id' => $data['use_id'],
+                    ':moo_id' => $data['moo_id'],
+                    ':gen_id' => $data['gen_id'],
+                    ':cou_id' => $data['cou_id']
+                ]))
+                {
+                    return $this->getDb()->lastInsertId();
+                }
+            }
         } 
         catch (PDOException $e) 
         {
-            throw new Exception("Erreur lors de la création de la playlist: " . $e->getMessage());
-        }
+            return $e->getMessage();
+        } 
     }
+    
 
     public function addMusics($data)
     {

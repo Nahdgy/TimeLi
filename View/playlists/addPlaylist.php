@@ -1,6 +1,9 @@
 <form action="index.php?ctrl=Playlists&action=createPlaylist" method="POST">
+    <div class="d-flex flex-column align-items-center">
+        <h1>Nom de la playlist</h1>
+        <input type="text" name="title" id="title" class="form-control w-50" required>
+    </div>
     <h1>Fais le choix de tes préférences</h1>
-    
     <!-- Mood section -->
     <div class="form-group">
         <label for="mood">Quel mood souhaites-tu ?</label>
@@ -129,6 +132,7 @@
         </div>
     </div>
 
+    <input type="hidden" name="submit" value="submit">
     <button type="submit" class="btn btn-primary">Valider</button>
 </form>
 

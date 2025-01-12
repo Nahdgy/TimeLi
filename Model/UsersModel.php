@@ -95,7 +95,19 @@ class UsersModel extends CoreModel
 #Méthode de récupération d'un utilisateur par son email
     public function findByEmail($email)
     {
-        $sql = "SELECT use_id AS Id, use_firstname AS Firstname, use_lastname AS Lastname, use_email AS Email, use_pwd AS Pwd, use_statue AS Statue, rol_id FROM users WHERE use_email = :email AND rol_id = 2";
+        $sql = "SELECT 
+        use_id AS Id, 
+        use_firstname AS Firstname, 
+        use_lastname AS Lastname, 
+        use_email AS Email, 
+        use_pwd AS Pwd, 
+        use_statue AS Statue, 
+        rol_id,
+        spotify_user_id,
+        spotify_access_token,
+        spotify_refresh_token
+        FROM users 
+        WHERE use_email = :email AND rol_id = 2";
 
         try
         {

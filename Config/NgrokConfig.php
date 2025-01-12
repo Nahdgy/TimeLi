@@ -8,7 +8,7 @@ class NgrokConfig {
             'path' => '/TimeLi/index.php?ctrl=Users&action=linkSpotify'
         ],
         'Controller/UsersController.php' => [
-            'pattern' => '/\$redirect_uri = \'(.*?)\';/',
+            'pattern' => "/'redirect_uri' => '(.*?)'/",
             'path' => '/TimeLi/index.php?ctrl=Users&action=linkSpotify'
         ]
     ];
@@ -58,19 +58,17 @@ class NgrokConfig {
             $content = file_get_contents($fullPath);
             $fullUrl = $baseUrl . $config['path'];
             
-            $newContent = preg_replace(
-                $config['pattern'],
-                str_contains($config['pattern'], "'") 
-                    ? "'redirect_uri' => '$fullUrl'" 
-                    : "\$redirect_uri = '$fullUrl';",
+            $newContent = str_replace(
+                "'redirect_uri' => 'https://",
+                "'redirect_uri' => '" . $baseUrl . $config['path'],
                 $content
             );
 
-            if ($newContent !== null && $newContent !== $content) {
+            if ($newContent !== $content) {
                 file_put_contents($fullPath, $newContent);
                 error_log("URL mise à jour dans $filePath");
             } else {
-                error_log("Erreur ou aucun changement lors de la mise à jour de $filePath");
+                error_log("Aucun changement nécessaire dans $filePath");
             }
         }
     }
