@@ -136,6 +136,12 @@ class AdminController
         include './View/users/connection.php';
     }
 
+    public function logout()
+    {
+        session_destroy();
+        header('Location: index.php?ctrl=Admin&action=login&role=admin');
+    }
+
     public function showPlaylists()
     {
         $modelPlaylists = new PlaylistsModel();

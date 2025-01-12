@@ -9,6 +9,11 @@
         </div>
     </div>
 
+    <!-- Boutton de déconnexion -->
+    <div class="text-end">
+        <a href="?ctrl=users&action=logout" class="btn btn-danger mt-3">Déconnexion</a>
+    </div>
+
     <!-- Contenu principal -->
     <div class="main-content flex-grow-1 bg-secondary bg-opacity-25 p-4">
         <h2 class="text-white">Bienvenue <?= $_SESSION['timeLi']['user']->getFirstname()?></h2>
@@ -30,7 +35,7 @@
                 <?php else: ?>
                     <li class="text-white">Vous n'avez pas encore créé de playlist</li>
                     <div class="text-center">
-                        <img src="assets/img/no-playlist.jpg" alt="Pas de playlist" class="img-fluid w-25 my-3">
+                        <img src="assets/img/no-playlist.png" alt="Pas de playlist" class="img-fluid w-25 my-3">
                     </div>
                 <?php endif; ?>
             </ul>

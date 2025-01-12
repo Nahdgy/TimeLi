@@ -98,7 +98,7 @@ class UsersController
     public function logout()
     {
         session_destroy();
-        header('Location: index.php?ctrl=home&action=index');
+        header('Location: index.php?ctrl=users&action=login&role=user');
     }
     public function delete()
     {
