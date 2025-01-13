@@ -185,6 +185,10 @@ class UsersController
             exit;
         }
     }
+    public function refreshToken()
+    {
+        $this->spotifyApiHandler->refreshAccessToken($_SESSION['timeLi']['user']->getSpotifyRefreshToken());
+    }
 
     private function validateUserData($data) {
         $errors = [];

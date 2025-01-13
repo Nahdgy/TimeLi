@@ -77,10 +77,7 @@ class MusicController
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
-    public function index()
-    {
-        
-    }
+    
     
     public function searchAjax()
     {

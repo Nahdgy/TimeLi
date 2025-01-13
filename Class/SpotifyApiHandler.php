@@ -206,9 +206,9 @@ class SpotifyApiHandler {
         
         curl_close($ch);
         
-        if ($http_code === 401) {
-            throw new Exception('Token expiré');
-        }
+        // if ($http_code === 401) {
+        //     throw new Exception('Token expiré');
+        // }
         
         if ($http_code !== 200) {
             throw new Exception('Erreur lors de la recherche Spotify: ' . $response);

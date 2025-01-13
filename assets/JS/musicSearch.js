@@ -19,8 +19,25 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`index.php?ctrl=music&action=searchAjax&query=${encodeURIComponent(query)}`)
             .then(response => {
                 if (!response.ok) {
+                    if (response.status === 401) 
+                    {
+                        return fetch('index.php?ctrl=Users&action=refreshToken')
+                            .then(refreshResponse => {
+                                if (!refreshResponse.ok) {
+                                    throw new Error('Erreur lors du rafraîchissement du token');
+                                }
+                                return refreshResponse.json();
+                            })
+                            .then(refreshData => {
+                                if (refreshData.success) {
+                                    return fetch(`index.php?ctrl=music&action=searchAjax&query=${encodeURIComponent(query)}`);
+                                } else {
+                                    throw new Error('Impossible de rafraîchir le token');
+                                }
+                            });
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                    }
                 return response.json();
             })
             .then(data => {
