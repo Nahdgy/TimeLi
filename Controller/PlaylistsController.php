@@ -68,6 +68,7 @@ class PlaylistsController
 
     public function createPlaylist()
     {
+        debug($_SESSION);
         if(isset($_SESSION['timeLi']['user']))
         {
             if(isset($_POST['submit']))

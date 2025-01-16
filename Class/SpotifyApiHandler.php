@@ -128,23 +128,29 @@ class SpotifyApiHandler {
         error_log('Début searchTracks avec query: ' . $query);
         error_log('Session actuelle: ' . print_r($_SESSION, true));
         
-        if ($access_token === null) {
+        if ($access_token === null) 
+        {
             $access_token = $this->access_token;
         }
         
-        try {
+        try 
+        {
             error_log('Tentative de recherche avec access_token: ' . substr($access_token, 0, 30) . '...');
             return $this->executeSearch($query, $access_token);
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) 
+        {
             error_log('Exception attrapée dans searchTracks: ' . $e->getMessage());
             
             if (strpos($e->getMessage(), '401') !== false && isset($_SESSION['timeLi']['user'])) {
-                try {
+                try 
+                {
                     error_log('Token expiré, tentative de rafraîchissement');
                     $refresh_token = $_SESSION['timeLi']['user']->getSpotifyRefreshToken();
                     error_log('Refresh token récupéré: ' . ($refresh_token ? 'oui' : 'non'));
                     
-                    if ($refresh_token) {
+                    if ($refresh_token) 
+                    {
                         error_log('Tentative de rafraîchissement avec refresh_token: ' . substr($refresh_token, 0, 30) . '...');
                         $tokens = $this->refreshAccessToken($refresh_token);
                         error_log('Nouveaux tokens reçus: ' . print_r($tokens, true));
@@ -166,10 +172,14 @@ class SpotifyApiHandler {
                         // Nouvel essai avec le nouveau token
                         error_log('Nouvelle tentative de recherche avec le nouveau token');
                         return $this->executeSearch($query, $tokens['access_token']);
-                    } else {
+                    } 
+                    else 
+                    {
                         error_log('Pas de refresh token disponible');
                     }
-                } catch (Exception $refreshError) {
+                } 
+                catch (Exception $refreshError) 
+                {
                     error_log('Erreur lors du rafraîchissement du token: ' . $refreshError->getMessage());
                     throw new Exception('Token d\'accès non disponible: ' . $refreshError->getMessage());
                 }
@@ -210,15 +220,15 @@ class SpotifyApiHandler {
         //     throw new Exception('Token expiré');
         // }
         
-        if ($http_code !== 200) {
-            throw new Exception('Erreur lors de la recherche Spotify: ' . $response);
-        }
+        // if ($http_code !== 200) {
+        //     throw new Exception('Erreur lors de la recherche Spotify: ' . $response);
+        // }
         
-        $result = json_decode($response, true);
-        if ($result === null) {
-            error_log('Erreur JSON: ' . json_last_error_msg());
-            throw new Exception('Réponse JSON invalide de Spotify');
-        }
+       $result = json_decode($response, true);
+        // if ($result === null) {
+        //     error_log('Erreur JSON: ' . json_last_error_msg());
+        //     throw new Exception('Réponse JSON invalide de Spotify');
+        // }
         
         return $result;
     }
